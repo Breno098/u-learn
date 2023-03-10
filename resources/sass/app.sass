@@ -1,0 +1,146 @@
+$adm-color-negative: #FF3945
+$adm-color-error: #B3261E
+$adm-color-positive: #4BE980
+$adm-color-caution: #FFBE41
+$adm-color-primary: #4F8BE6
+$adm-color-primary-dark: #565F73
+$adm-color-purple: #A4508C
+
+*
+    font-family: 'Inter', sans-serif
+
+.adm-bg-primary
+    background: $adm-color-primary
+
+.adm-text-primary
+    color: $adm-color-primary
+
+.adm-border-primary
+    border: 1px solid $adm-color-primary
+
+.adm-bg-primary-dark
+    background: $adm-color-primary-dark
+
+.adm-text-primary-dark
+    color: $adm-color-primary-dark
+
+.adm-bg-negative
+    background: $adm-color-negative
+
+.adm-text-negative
+    color: $adm-color-negative
+
+.adm-bg-error
+    background: $adm-color-error
+
+.adm-text-error
+    color: $adm-color-error
+
+.adm-bg-positive
+    background: $adm-color-positive
+
+.adm-text-positive
+    color: $adm-color-positive
+
+.adm-bg-caution
+    background: $adm-color-caution
+
+.adm-text-caution
+    color: $adm-color-caution
+
+.adm-bg-purple
+    background: $adm-color-purple
+
+.adm-text-purple
+    color: $adm-color-purple
+
+.adm-border-dashed-blue
+    border: 1px dashed $adm-color-primary
+
+.adm-main-container
+    padding: 30px 64px
+    background: #E9EDF2
+
+    @media (max-width: 850px)
+        padding: 30px 20px
+
+.adm-active-link
+    background: #222836
+
+.active-color
+    color: $adm-color-primary
+
+.adm-drawer
+    background: #1D1E20
+
+.adm-drawer-item
+    padding: 16px 24px 16px 40px
+
+.adm-top-bar
+    padding: 0 64px
+
+    @media (max-width: 850px)
+        padding: 0 20px
+
+.adm-chip-primary
+    background: #F0F6FF
+    border: 1px solid $adm-color-primary
+    padding: 4px 8px
+    color: $adm-color-primary
+
+// Font-sizes
+@for $i from 1 through 50
+    .adm-fs-#{$i}
+        font-size: #{$i}px
+
+// Font-weights
+$fontWeights: 100, 200, 300, 400, 500, 600, 700, 800, 900
+
+@each $fw in $fontWeights
+    .adm-fw-#{$fw}
+        font-weight: #{$fw}
+
+// Line-height
+$lineHeight: 16, 20, 24, 28, 32, 36, 40, 44, 48
+
+@each $lh in $lineHeight
+    .adm-lh-#{$lh}
+        line-height: #{$lh}px
+
+// Border-radius
+$borderRadius: 16, 24, 32, 40, 48
+
+@each $br in $borderRadius
+    .adm-br-#{$br}
+        border-radius: #{$br}px
+
+    .adm-br-tr-#{$br}
+        border-top-right-radius: #{$br}px
+
+    .adm-br-tl-#{$br}
+        border-top-left-radius: #{$br}px
+
+    .adm-br-br-#{$br}
+        border-bottom-right-radius: #{$br}px
+
+    .adm-br-bl-#{$br}
+        border-bottom-left-radius: #{$br}px
+
+
+// Auth
+.adm-auth-card-form
+    max-width: 675px
+    max-height: 275px
+    @media (max-width: 850px)
+        width: 80%
+
+.adm-auth-background
+    background-image: linear-gradient(#1D1E20 0, #1D1E20 100%), linear-gradient(#C3CDD9 0, #C3CDD9 100%)
+    background-size: 100% 50%
+    background-position: top, bottom
+    background-repeat: no-repeat
+
+.adm-auth-logo
+    max-width: 197.19px
+    max-height: 76px
+    margin-top: 136px
