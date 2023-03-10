@@ -25,45 +25,36 @@
 
     const goRoute = (routeName) => useForm().get(route(routeName));
 
-    const thumbStyle = {
-        right: '4px',
-        borderRadius: '5px',
-        backgroundColor: '#4F8BE6',
-        width: '5px',
-        opacity: 0.75
-    }
-
-    const barStyle = {
-        right: '2px',
-        borderRadius: '9px',
-        backgroundColor: '#cce7ff',
-        width: '9px',
-        opacity: 0.2
-    }
-
 </script>
 
 <template>
     <q-layout view="lhh lpR lFf">
         <q-header class="bg-white">
-            <q-toolbar style="height: 80px;" class="adm-top-bar">
-                <q-btn dense flat icon="menu" color="grey" @click="toggleLeftDrawer" />
+            <q-toolbar  class="adm-top-bar">
+                <q-btn
+                    dense
+                    flat
+                    icon="menu_open"
+                    color="indigo"
+                    @click="toggleLeftDrawer"
+                    :class="{
+                        'rotate-180': !leftDrawerOpen
+                    }"
+                />
 
                 <q-toolbar-title class="text-primary row items-center">
-                    <q-icon
+                    <!-- <q-icon
                         name="o_calendar_today"
                         color="grey"
                     />
 
                     <div class="q-ml-sm adm-fs-16 adm-fw-400 text-grey-8">
                         {{ dateNow }}
-                    </div>
+                    </div> -->
                 </q-toolbar-title>
 
-                <q-btn round dense flat color="grey" icon="search" class="q-mx-xs"/>
-
                 <q-btn round dense flat class="q-mx-xs">
-                    <q-icon name="notifications" class="material-icons-outlined" color="grey"/>
+                    <q-icon name="notifications" class="material-icons-outlined" color="indigo"/>
                     <q-tooltip>Notificações</q-tooltip>
                 </q-btn>
 
@@ -72,13 +63,13 @@
                         <img src="https://cdn.quasar.dev/img/avatar2.jpg">
                     </q-avatar>
 
-                    <q-icon name="keyboard_arrow_down" color="grey" class="q-ml-xs"/>
+                    <q-icon name="keyboard_arrow_down" color="indigo" class="q-ml-xs"/>
 
                     <q-tooltip>Perfil</q-tooltip>
 
                     <q-menu>
                         <div class="row no-wrap q-pa-md">
-                            <div class="column items-center q-pa-lg q-px-xl">
+                            <div class="column items-center q-pa-md q-px-xl">
                                 <q-avatar size="72px">
                                     <img src="https://cdn.quasar.dev/img/avatar2.jpg">
                                 </q-avatar>
@@ -88,9 +79,7 @@
                                 </div>
 
                                 <q-btn
-                                    color="primary"
-                                    push
-                                    size="sm"
+                                    color="indigo"
                                     v-close-popup
                                     @click="logout"
                                     label="Sair"
@@ -104,27 +93,28 @@
 
         <q-drawer
             v-model="leftDrawerOpen"
-            :width="256"
+            :width="260"
             :breakpoint="500"
-            class="adm-drawer"
+            class="bg-indigo"
         >
-            <q-scroll-area
-                class="fit"
-                :thumb-style="thumbStyle"
-                :bar-style="barStyle"
-            >
-                <q-img
+            <q-scroll-area class="fit">
+                <!-- <q-img
                     src="/img/admin/logo_ligia_academy.png"
                     style="max-width: 150px; max-height: 80px"
                     class="q-mx-xl q-mt-md "
-               />
+               /> -->
 
                 <q-list
                     padding
                     v-for="(menuItem, index) in $page.props.menu"
                     :key="index"
                 >
-                    <q-item-label header overline class="q-pl-xl">
+                    <q-item-label
+                        v-if="menuItem.label"
+                        header
+                        overline
+                        class="text-white q-pb-sm"
+                    >
                         {{ menuItem.label }}
                     </q-item-label>
 
@@ -132,34 +122,26 @@
                         <q-item
                             v-ripple
                             :active="route().current(item.active)"
-                            active-class="adm-active-link"
-                            class="cursor-pointer adm-drawer-item"
+                            active-class="bg-indigo-10"
+                            class="cursor-pointer q-pl-xl"
                             @click="goRoute(item.route)"
                             clickable
                         >
                             <q-item-section avatar>
-                                <q-icon
-                                    :name="item.icon"
-                                    :class="route().current(item.active) ? 'adm-active-color' : 'text-white'"
-                                />
+                                <q-icon :name="item.icon" color="white"/>
                             </q-item-section>
 
-                            <q-item-section
-                                :class="route().current(item.active) ? 'adm-active-color' : 'text-white'"
-                                class="adm-fw-500 adm-fs-16 adm-lh-16"
-                            >
+                            <q-item-section class="text-white adm-fs-16">
                                 {{ item.label }}
                             </q-item-section>
                         </q-item>
-
-                        <q-separator class="adm-active-link"/>
                     </div>
                 </q-list>
             </q-scroll-area>
         </q-drawer>
 
         <q-page-container>
-            <q-page class="adm-main-container">
+            <q-page class="adm-main-container  bg-indigo-1">
                 <slot />
             </q-page>
         </q-page-container>

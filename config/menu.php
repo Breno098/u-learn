@@ -84,7 +84,7 @@ return [
                 'route' => 'admin.course.index',
                 'active' => 'admin.course*',
                 'label' => 'Cursos',
-                'icon' => 'o_local_movies',
+                'icon' => 'o_school',
                 'can' => 'course_index'
             ],
             [

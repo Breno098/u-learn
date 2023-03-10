@@ -1,76 +1,92 @@
 <script setup>
-  import { useDialogPluginComponent } from 'quasar'
+    import { useDialogPluginComponent } from 'quasar'
+    import { computed, onMounted } from 'vue';
 
-  const props = defineProps({
-    title: String,
-    message: String,
-    confirm: {
-        type: Boolean,
-        default: false
-    },
-    html: {
-        type: Boolean,
-        default: false
-    }
-  })
+    const props = defineProps({
+        title: String,
+        message: String,
+        icon: String|Object,
+        timeout: Number,
+        confirm: {
+            type: Boolean,
+            default: false
+        },
+        html: {
+            type: Boolean,
+            default: false
+        }
+    })
 
-  defineEmits([
-    ...useDialogPluginComponent.emits
-  ])
+    defineEmits([
+        ...useDialogPluginComponent.emits
+    ])
 
-  const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
+    onMounted(() => {
+        if (props.timeout) {
+            setTimeout(() => {
+                onDialogCancel();
+            }, props.timeout);
+        }
+    })
+
+    const iconName = computed(() => typeof props.icon === 'string' ?  props.icon : props.icon.name);
+    const iconColor = computed(() => typeof props.icon === 'string' ?  '' : props.icon.color);
+
+    const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent()
 </script>
 
 <template>
-    <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-dialog
+        ref="dialogRef"
+        @hide="onDialogHide"
+        transition-show="slide-down"
+        transition-hide="slide-down"
+        :transition-duration="1000"
+    >
         <q-card
-            class="q-dialog-plugin"
-            style="width: 550px; padding: 16px 48px; border-radius: 16px;"
+            class="q-dialog-plugin q-py-md"
+            style="width: 600px; max-width: 90vw"
         >
-            <q-card-section class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8 text-center">
+            <q-card-section class="flex flex-center q-py-lg" v-if="icon">
+                <q-icon :name="iconName" size="5em" :color="iconColor" />
+            </q-card-section>
+
+            <q-card-section class="adm-fs-28 adm-fw-700 adm-lh-32 text-blue-grey-10 text-center">
                 {{ title }}
             </q-card-section>
 
-            <q-card-section style="font-size: 16px;">
+            <q-card-section style="font-size: 16px;" class="q-py-lg">
                 <div
-                    class="text-grey-8 text-center"
+                    class="text-blue-grey-10 text-center"
                     v-if="html"
                     v-html="message"
                 ></div>
 
-                <div class="text-grey-8 text-center" v-else>
+                <div class="text-blue-grey-10 text-center" v-else>
                     {{ message }}
                 </div>
             </q-card-section>
 
-            <q-card-actions align="center" v-if="confirm">
+            <q-card-actions class="flex flex-center" v-if="confirm">
                 <q-btn
-                    color="green-13"
-                    rounded
+                    color="green"
                     no-caps
                     @click="onDialogOK"
-                    unelevated
-                >
-                    <q-icon name="check" size="xs" class="q-ml-sm"/>
-
-                    <div class="text-caption q-mx-sm">
-                        Sim
-                    </div>
-                </q-btn>
+                    label="Sim"
+                    outline
+                    icon="thumb_up_alt"
+                    style="width: 150px"
+                />
 
                 <q-btn
-                    color="negative"
-                    rounded
+                    color="red"
                     no-caps
                     @click="onDialogCancel"
-                    unelevated
-                >
-                    <q-icon name="close" size="xs" class="q-ml-sm"/>
-
-                    <div class="text-caption q-mx-sm">
-                        Não
-                    </div>
-                </q-btn>
+                    label="Não"
+                    outline
+                    icon="thumb_down_alt"
+                    style="width: 150px"
+                />
             </q-card-actions>
         </q-card>
     </q-dialog>

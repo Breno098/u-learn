@@ -2,12 +2,12 @@ $adm-color-negative: #FF3945
 $adm-color-error: #B3261E
 $adm-color-positive: #4BE980
 $adm-color-caution: #FFBE41
-$adm-color-primary: #4F8BE6
+$adm-color-primary: #5110B5
 $adm-color-primary-dark: #565F73
 $adm-color-purple: #A4508C
 
 *
-    font-family: 'Inter', sans-serif
+    font-family: 'Ubuntu', sans-serif
 
 .adm-bg-primary
     background: $adm-color-primary
@@ -54,30 +54,17 @@ $adm-color-purple: #A4508C
 .adm-text-purple
     color: $adm-color-purple
 
-.adm-border-dashed-blue
+.adm-border-dashed-indigo
     border: 1px dashed $adm-color-primary
 
 .adm-main-container
-    padding: 30px 64px
-    background: #E9EDF2
+    padding: 20px 40px
 
     @media (max-width: 850px)
         padding: 30px 20px
 
-.adm-active-link
-    background: #222836
-
-.active-color
-    color: $adm-color-primary
-
-.adm-drawer
-    background: #1D1E20
-
-.adm-drawer-item
-    padding: 16px 24px 16px 40px
-
 .adm-top-bar
-    padding: 0 64px
+    padding: 0 40px
 
     @media (max-width: 850px)
         padding: 0 20px
@@ -110,21 +97,21 @@ $lineHeight: 16, 20, 24, 28, 32, 36, 40, 44, 48
 // Border-radius
 $borderRadius: 16, 24, 32, 40, 48
 
-@each $br in $borderRadius
-    .adm-br-#{$br}
-        border-radius: #{$br}px
+@for $i from 1 through 50
+    .adm-br-#{$i}
+        border-radius: #{$i}px
 
-    .adm-br-tr-#{$br}
-        border-top-right-radius: #{$br}px
+    .adm-br-tr-#{$i}
+        border-top-right-radius: #{$i}px
 
-    .adm-br-tl-#{$br}
-        border-top-left-radius: #{$br}px
+    .adm-br-tl-#{$i}
+        border-top-left-radius: #{$i}px
 
-    .adm-br-br-#{$br}
-        border-bottom-right-radius: #{$br}px
+    .adm-br-br-#{$i}
+        border-bottom-right-radius: #{$i}px
 
-    .adm-br-bl-#{$br}
-        border-bottom-left-radius: #{$br}px
+    .adm-br-bl-#{$i}
+        border-bottom-left-radius: #{$i}px
 
 
 // Auth
