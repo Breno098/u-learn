@@ -40,7 +40,7 @@ class LiveEventStoreRequest extends FormRequest
             'materials' => 'nullable|array',
             'image' => 'nullable',
             'has_link_with_content' => 'required|boolean',
-            "content_id" => 'required_if:has_link_with_content,true',
+            "course_id" => 'required_if:has_link_with_content,true',
             "linkable_id" => 'required_unless:linkable_type,content',
             "linkable_type" => "nullable|in:content,season,chapter",
         ];
@@ -68,7 +68,7 @@ class LiveEventStoreRequest extends FormRequest
             'end_at.after' => 'Informe a data e hora de término posterior a data e hora de início',
             'embed.required' => 'Preencha o link',
             'embed.url' => 'Deve ser do formato de url',
-            'content_id.required_if' => 'Vincule a um conteúdo',
+            'course_id.required_if' => 'Vincule a um conteúdo',
             'linkable_id.required_unless' => 'Vincule ao final do conteúdo ou selecione temporada ou episódio'
         ];
     }

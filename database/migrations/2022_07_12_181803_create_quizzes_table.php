@@ -18,7 +18,7 @@ class CreateQuizzesTable extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->integer('attempts')->default(1);
-            $table->foreignId('content_id')->constrained();
+            $table->foreignId('course_id')->constrained();
             $table->nullableMorphs('linkable');
             $table->string('answer_file')->nullable();
             $table->timestamps();

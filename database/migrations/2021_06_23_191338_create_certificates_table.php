@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContentSectionTable extends Migration
+class CreateCertificatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateContentSectionTable extends Migration
      */
     public function up()
     {
-        Schema::create('content_section', function (Blueprint $table) {
+        Schema::create('certificates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('content_id')->constrained();
-            $table->foreignId('section_id')->constrained();
+            $table->string('name');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateContentSectionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('content_section');
+        Schema::dropIfExists('certificates');
     }
 }

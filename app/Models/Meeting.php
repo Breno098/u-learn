@@ -66,7 +66,7 @@ class Meeting extends Model
         'tags',
         'linkable_id',
         'linkable_type',
-        'content_id',
+        'course_id',
         'has_link_with_content'
     ];
 

@@ -23,25 +23,7 @@ class StudentFactory extends Factory
             'cpf' => fake()->numerify('###.###.###-##'),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
-            'customer_cpf' => fake()->numerify('###.###.###-##'),
-            'customer_phone' => fake()->phoneNumber(),
-            'customer_address' => fake()->address(),
             'created_at' => fake()->dateTimeBetween('-2 months', 'now')
         ];
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    public function equalData()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'customer_cpf' => $attributes['cpf'],
-                'customer_phone' => $attributes['phone'],
-                'customer_address' => $attributes['address'],
-                'equal_data' => true
-            ];
-        });
     }
 }

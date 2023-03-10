@@ -41,7 +41,7 @@ class MeetingUpdateRequest extends FormRequest
             'materials' => 'nullable|array',
             'image' => 'nullable',
             'has_link_with_content' => 'required|boolean',
-            "content_id" => 'required_if:has_link_with_content,true',
+            "course_id" => 'required_if:has_link_with_content,true',
             "linkable_id" => 'required_unless:linkable_type,content',
             "linkable_type" => "nullable|in:content,season,chapter",
         ];
@@ -66,7 +66,7 @@ class MeetingUpdateRequest extends FormRequest
             'end_at.required' => 'Informe a data e hora final',
             'end_at.date_format' => "Informe a data e hora corretamente. Exemplo: {$dateFormatForExample}",
             'embed_offer.url' => 'Deve ser do formato de url',
-            'content_id.required_if' => 'Vincule a um conteúdo',
+            'course_id.required_if' => 'Vincule a um conteúdo',
             'linkable_id.required_unless' => 'Vincule ao final do conteúdo ou selecione temporada ou episódio'
         ];
     }

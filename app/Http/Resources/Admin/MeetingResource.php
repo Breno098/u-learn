@@ -38,7 +38,7 @@ class MeetingResource extends JsonResource
             'tags' => $meeting->tags,
             'materials' => MaterialResource::collection($meeting->materials),
             'has_link_with_content' => $meeting->has_link_with_content,
-            'content_id' => $meeting->content_id,
+            'course_id' => $meeting->course_id,
             'content' => [
                 'id' => $meeting->content->id,
                 'name' => $meeting->content->name,

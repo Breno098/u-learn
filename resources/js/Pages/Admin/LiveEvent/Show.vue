@@ -34,7 +34,7 @@
         image: props.liveEvent.image,
         linkable_id: props.liveEvent.linkable_id,
         linkable_type: props.liveEvent.linkable_type,
-        content_id: props.liveEvent.content_id,
+        course_id: props.liveEvent.course_id,
         has_link_with_content: props.liveEvent.has_link_with_content,
     });
 
@@ -352,7 +352,7 @@
                         emit-value
                         map-options
                         outlined
-                        v-model="form.content_id"
+                        v-model="form.course_id"
                         label="Vincular ao conteúdo"
                         disable
                     >
@@ -368,7 +368,7 @@
 
                 <div class="col-12 col-md-4" v-if="form.has_link_with_content">
                     <q-select
-                        v-if="form.content_id"
+                        v-if="form.course_id"
                         :options="optionsLinkableTypes"
                         emit-value
                         map-options

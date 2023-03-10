@@ -36,7 +36,7 @@ class LiveEventResource extends JsonResource
             'image' => $liveEvent->image,
             'materials' => MaterialResource::collection($liveEvent->materials),
             'has_link_with_content' => $liveEvent->has_link_with_content,
-            'content_id' => $liveEvent->content_id,
+            'course_id' => $liveEvent->course_id,
             'content' => [
                 'id' => $liveEvent->content->id,
                 'name' => $liveEvent->content->name,

@@ -138,8 +138,8 @@ class LiveEventService
             'has_link_with_content' => $hasLinkWithContent
         ];
 
-        if ($contentId = Arr::get($requestData, 'content_id') && $hasLinkWithContent) {
-           $transform['content_id'] = $contentId;
+        if ($contentId = Arr::get($requestData, 'course_id') && $hasLinkWithContent) {
+           $transform['course_id'] = $contentId;
 
            $transform['linkable_type'] = match (Arr::get($requestData, 'linkable_type')) {
                 'season' => Season::class,
@@ -153,7 +153,7 @@ class LiveEventService
                 default => $contentId
             };
         } else {
-            $transform['content_id'] = null;
+            $transform['course_id'] = null;
             $transform['linkable_type'] = null;
             $transform['linkable_id'] = null;
         }

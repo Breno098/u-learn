@@ -23,9 +23,6 @@ class UserFactory extends Factory
             'cpf' => fake()->numerify('###.###.###-##'),
             'phone' => fake()->numerify('(##) #########'),
             'address' => fake()->address(),
-            'customer_cpf' => fake()->numerify('###.###.###-##'),
-            'customer_phone' => fake()->phoneNumber(),
-            'customer_address' => fake()->address(),
             'created_at' => fake()->dateTimeBetween('-2 months', 'now')
         ];
     }

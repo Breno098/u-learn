@@ -24,7 +24,7 @@
         name: props.quizz.name,
         description: props.quizz.description,
         questions: props.quizz.questions,
-        content_id: props.quizz.content_id,
+        course_id: props.quizz.course_id,
         linkable_id: props.quizz.linkable_id,
         linkable_type: props.quizz.linkable_type,
         answer_file: props.quizz.answer_file,
@@ -152,7 +152,7 @@
                         emit-value
                         map-options
                         outlined
-                        v-model="form.content_id"
+                        v-model="form.course_id"
                         label="Vincular quizz ao conteúdo"
                         disable
                     >

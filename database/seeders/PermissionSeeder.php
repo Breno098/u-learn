@@ -15,7 +15,7 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        $this->commonPermission('conteúdos', 'content');
+        $this->commonPermission('cursos', 'course');
         $this->commonPermission('campanhas', 'campaign');
         $this->commonPermission('categorias', 'category');
         $this->commonPermission('usuários', 'user');

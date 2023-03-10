@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\AnswerTypeEnum;
 use App\Models\Chapter;
-use App\Models\Content;
+use App\Models\Course;
 use App\Models\Question;
 use App\Models\Quizz;
 use App\Models\Season;
@@ -20,16 +20,16 @@ class QuizzSeeder extends Seeder
     public function run()
     {
         Quizz::factory(random_int(10, 20))->state(function() {
-            $content = Content::where('has_seasons', false)->get()->random();
+            $content = Course::where('has_seasons', false)->get()->random();
 
             return [
-                'content_id' => $content->id,
+                'course_id' => $content->id,
             ];
         })->create();
 
         Quizz::factory(random_int(10, 20))
             ->state(function() {
-                $content = Content::where('has_seasons', true)->get()->random();
+                $content = Course::where('has_seasons', true)->get()->random();
 
                 if (! $content)
                     return [];
@@ -39,7 +39,7 @@ class QuizzSeeder extends Seeder
                 return [
                     'linkable_type' => Season::class,
                     'linkable_id' => $season->id,
-                    'content_id' => $content->id,
+                    'course_id' => $content->id,
                 ];
             })
             ->create();
@@ -64,7 +64,7 @@ class QuizzSeeder extends Seeder
                 return [
                     'linkable_type' => Chapter::class,
                     'linkable_id' => $chapter->id,
-                    'content_id' => $content->id,
+                    'course_id' => $content->id,
                 ];
             })
             ->create();

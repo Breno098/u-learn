@@ -28,7 +28,7 @@ class QuizzStoreRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'nullable|string',
             'answer_file' => 'nullable',
-            "content_id" => 'required|exists:contents,id',
+            "course_id" => 'required|exists:contents,id',
             "linkable_id" => 'nullable|integer',
             "linkable_type" => "nullable|in:content,season,chapter",
             "answer_file" => 'nullable',
@@ -45,7 +45,7 @@ class QuizzStoreRequest extends FormRequest
     {
         return [
             'name.required' => 'Preencha o nome',
-            'content_id.required' => 'Vincule ao um conteúdo',
+            'course_id.required' => 'Vincule ao um conteúdo',
         ];
     }
 }

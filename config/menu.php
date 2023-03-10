@@ -81,11 +81,11 @@ return [
         'label' => 'CADASTROS',
         'items' => [
             [
-                'route' => 'admin.content.index',
-                'active' => 'admin.content*',
-                'label' => 'Conteúdos',
+                'route' => 'admin.course.index',
+                'active' => 'admin.course*',
+                'label' => 'Cursos',
                 'icon' => 'o_local_movies',
-                'can' => 'content_index'
+                'can' => 'course_index'
             ],
             [
                 'route' => 'admin.category.index',

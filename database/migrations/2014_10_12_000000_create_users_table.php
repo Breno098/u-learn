@@ -26,10 +26,6 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('address')->nullable();
-            $table->string('customer_cpf')->nullable();
-            $table->string('customer_phone')->nullable();
-            $table->string('customer_address')->nullable();
-            $table->boolean('equal_data')->default(false);
             $table->timestamps();
         });
     }

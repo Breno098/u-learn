@@ -4,22 +4,17 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { useQuasar } from 'quasar'
     import DialogConfirm from '@/Components/DialogConfirm.vue';
-    import SummaryContents from '@/Components/Content/SummaryContents.vue';
 
     const $q = useQuasar()
 
     const props = defineProps({
-        contents: Object,
+        courses: Object,
         errors: Object,
         query: Object,
 
-        contentReleasedThisMonth: Object,
-        contentsMostViewed: Object,
-        contentsExpiresIn60Days: Object,
-
-        canContentStore: Boolean,
-        canContentEdit: Boolean,
-        canContentDestroy: Boolean,
+        canCourseStore: Boolean,
+        canCourseEdit: Boolean,
+        canCourseDestroy: Boolean,
     });
 
     const columns = [{
@@ -32,26 +27,8 @@
         name: 'category_name',
         align: 'left',
         label: 'Categoria',
-        field: content => content.category.name,
+        field: course => course.category.name,
         style: 'width: 10%',
-    }, {
-        name: 'sections_name',
-        align: 'left',
-        label: 'Seções',
-        field: content => content.sections.map(s => s.name).join(', '),
-        style: 'width: 35%',
-    }, {
-        name: 'launch_start_at',
-        align: 'left',
-        label: 'Lançamento',
-        field: 'launch_start_at',
-        style: 'width: 15%',
-    }, {
-        name: 'end_at',
-        align: 'left',
-        label: 'Encerramento',
-        field: 'end_at',
-        style: 'width: 15%',
     }, {
         name: 'actions',
         label: 'Ação',
@@ -64,8 +41,6 @@
         rowsPerPage: props.query.rowsPerPage,
         filters: {
             name: props.query.filters.name,
-            launch_start_at: props.query.filters.launch_start_at,
-            launch_end_at: props.query.filters.launch_end_at,
         },
     });
 
@@ -88,54 +63,34 @@
     }
 
     const submit = () => {
-        requestData.get(route('admin.content.index'), {
+        requestData.get(route('admin.course.index'), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => showFilters.value = false,
         });
     }
 
-    const create = () => useForm().get(route('admin.content.create'));
+    const create = () => useForm().get(route('admin.course.create'));
 
-    const edit = (id) => useForm().get(route('admin.content.edit', id));
+    const edit = (id) => useForm().get(route('admin.course.edit', id));
 
-    const show = (id) => useForm().get(route('admin.content.show', id));
-
-    const exportExcel = () => {
-        axios.get(route('admin.content.export', requestData), {
-            responseType: "blob"
-        })
-        .then(response => {
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'conteudos.xlsx');
-            link.click();
-        })
-        .catch(response => {
-            $q.notify({
-                type: 'negative',
-                message: 'Erro ao fazer a exportação',
-                position: 'center',
-            })
-        });
-    }
+    const show = (id) => useForm().get(route('admin.course.show', id));
 
     const destroy = (id) => {
         $q.dialog({
             component: DialogConfirm,
             componentProps: {
-                title: 'Excluir conteúdo',
-                message: 'Tem certeza que deseja excluir essa conteúdo?',
+                title: 'Excluir curso',
+                message: 'Tem certeza que deseja excluir essa curso?',
             },
         }).onOk(() => {
-            useForm().delete(route('admin.content.destroy', id), {
+            useForm().delete(route('admin.course.destroy', id), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
                     $q.notify({
                         type: 'positive',
-                        message: 'Conteúdo excluído com sucesso',
+                        message: 'Curso excluído com sucesso',
                         position: 'top',
                     })
                 }
@@ -148,16 +103,16 @@
             component: DialogConfirm,
             componentProps: {
                 title: 'Excluir selecionados',
-                message: 'Tem certeza que deseja excluir conteúdos selecionadas?',
+                message: 'Tem certeza que deseja excluir cursos selecionadas?',
             },
       }).onOk(() => {
-        useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.content.destroy-multiples'), {
+        useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.course.destroy-multiples'), {
             onSuccess: () => {
                 selected.value = [];
 
                 $q.notify({
                     type: 'positive',
-                    message: 'Conteúdo excluídas com sucesso',
+                    message: 'Cursos excluídos com sucesso',
                     position: 'top',
                 })
             }
@@ -171,24 +126,23 @@
 
     const showFilters = ref(false)
 
-    const clearFilters = () => useForm().get(route('admin.content.index'))
-
+    const clearFilters = () => useForm().get(route('admin.course.index'))
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Conteúdos" />
+        <Head title="Cursos" />
 
         <div class="row q-pb-lg">
             <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Conteúdos </div>
+                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Cursos </div>
 
                 <q-breadcrumbs
                     class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
                     gutter="xs"
                 >
                     <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Conteúdos" class="text-primary" />
+                    <q-breadcrumbs-el label="Cursos" class="text-primary" />
                 </q-breadcrumbs>
             </div>
 
@@ -218,17 +172,11 @@
                     <q-icon name="add" size="xs"/>
 
                     <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Novo conteúdo
+                        Novo Curso
                     </div>
                 </q-btn>
             </div>
         </div>
-
-        <SummaryContents
-            :contentReleasedThisMonth="contentReleasedThisMonth"
-            :contentsMostViewed="contentsMostViewed"
-            :contentsExpiresIn60Days="contentsExpiresIn60Days"
-        />
 
         <q-card flat class="adm-br-16">
             <q-card-section class="row items-center q-py-sm q-px-lg">
@@ -241,32 +189,6 @@
                         name="cancel"
                         size="xs"
                         @click="removeFilter('name')"
-                        class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-chip
-                    class="adm-chip-primary"
-                    v-if="query.filters.launch_start_at"
-                    :label="`Inicio = ${query.filters.launch_start_at}`"
-                >
-                    <q-icon
-                        name="cancel"
-                        size="xs"
-                        @click="removeFilter('launch_start_at')"
-                        class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-chip
-                    class="adm-chip-primary"
-                    v-if="query.filters.launch_end_at"
-                    :label="`Termina = ${query.filters.launch_end_at}`"
-                >
-                    <q-icon
-                        name="cancel"
-                        size="xs"
-                        @click="removeFilter('launch_end_at')"
                         class="q-ml-xs cursor-pointer"
                     />
                 </q-chip>
@@ -295,100 +217,8 @@
                                 <q-input
                                     outlined
                                     v-model="requestData.filters.name"
-                                    label="Nome do conteúdo"
+                                    label="Nome do Curso"
                                 />
-                            </div>
-
-                            <div class="col-12">
-                                <q-input
-                                    outlined
-                                    v-model="requestData.filters.launch_start_at"
-                                    mask="##/##/#### ##:##"
-                                    label="Data e hora de inicio"
-                                    placeholder="dia/mês/ano hora:min"
-                                    :bottom-slots="Boolean(errors['filters.launch_start_at'])"
-                                    clearable
-                                >
-                                    <template v-slot:hint>
-                                        <div class="text-red"> {{ errors['filters.launch_start_at'] }} </div>
-                                    </template>
-
-                                    <template v-slot:prepend>
-                                        <q-icon name="o_calendar_today" />
-                                    </template>
-
-                                    <q-popup-proxy class="row">
-                                        <q-date
-                                            v-model="requestData.filters.launch_start_at"
-                                            mask="DD/MM/YYYY HH:mm"
-                                            flat
-                                            square
-                                        />
-
-                                        <q-time
-                                            v-model="requestData.filters.launch_start_at"
-                                            mask="DD/MM/YYYY HH:mm"
-                                            format24h
-                                            flat
-                                            square
-                                        >
-                                            <div class="row items-center justify-end">
-                                                <q-btn
-                                                    label="Ok"
-                                                    color="primary"
-                                                    flat
-                                                    v-close-popup
-                                                />
-                                            </div>
-                                        </q-time>
-                                    </q-popup-proxy>
-                                </q-input>
-                            </div>
-
-                            <div class="col-12">
-                                <q-input
-                                    outlined
-                                    v-model="requestData.filters.launch_end_at"
-                                    mask="##/##/#### ##:##"
-                                    label="Data e hora de término"
-                                    :bottom-slots="Boolean(errors['filters.launch_end_at'])"
-                                    placeholder="dia/mês/ano hora:min"
-                                    clearable
-                                >
-                                    <template v-slot:hint>
-                                        <div class="text-red"> {{ errors['filters.launch_end_at'] }} </div>
-                                    </template>
-
-                                    <template v-slot:prepend>
-                                        <q-icon name="o_calendar_today" />
-                                    </template>
-
-                                    <q-popup-proxy class="row">
-                                        <q-date
-                                            v-model="requestData.filters.launch_end_at"
-                                            mask="DD/MM/YYYY HH:mm"
-                                            flat
-                                            square
-                                        />
-
-                                        <q-time
-                                            v-model="requestData.filters.launch_end_at"
-                                            mask="DD/MM/YYYY HH:mm"
-                                            format24h
-                                            flat
-                                            square
-                                        >
-                                            <div class="row items-center justify-end">
-                                                <q-btn
-                                                    label="Ok"
-                                                    color="primary"
-                                                    flat
-                                                    v-close-popup
-                                                />
-                                            </div>
-                                        </q-time>
-                                    </q-popup-proxy>
-                                </q-input>
                             </div>
                         </div>
 
@@ -431,7 +261,7 @@
 
             <q-card-section class="q-py-none">
                 <q-table
-                    :rows="contents.data"
+                    :rows="courses.data"
                     :columns="columns"
                     flat
                     class="text-grey-8"
@@ -475,11 +305,11 @@
                     <template v-slot:body-cell-actions="props">
                         <q-td :props="props">
                             <div class="row items-center justify-center adm-fw-700 adm-fs-16">
-                                <q-btn icon="more_vert" flat v-if="canContentEdit || canContentDestroy">
+                                <q-btn icon="more_vert" flat v-if="canCourseEdit || canCourseDestroy">
                                     <q-menu :offset="[65, 0]">
                                         <q-list>
                                             <q-item
-                                                v-if="canContentEdit"
+                                                v-if="canCourseEdit"
                                                 clickable
                                                 @click="edit(props.row.id)"
                                                 class="text-grey-7 flex items-center"
@@ -508,7 +338,7 @@
                                             <q-separator/>
 
                                             <q-item
-                                                v-if="canContentDestroy"
+                                                v-if="canCourseDestroy"
                                                 clickable
                                                 @click="destroy(props.row.id)"
                                                 class="text-grey-7 flex flex-center"
@@ -570,7 +400,7 @@
 
                     <q-pagination
                         v-model="requestData.page"
-                        :max="contents.meta.last_page"
+                        :max="courses.meta.last_page"
                         @update:model-value="submit"
                         direction-links
                         boundary-links

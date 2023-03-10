@@ -6,13 +6,9 @@ use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommonQuestionController;
-use App\Http\Controllers\Admin\ContentController;
-use App\Http\Controllers\Admin\ContentExtraController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CommercialController;
-use App\Http\Controllers\Admin\ContentChapterController;
-use App\Http\Controllers\Admin\ContentSeasonChapterController;
 use App\Http\Controllers\Admin\FinancialController;
-use App\Http\Controllers\Admin\SeasonController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItemController;
@@ -117,22 +113,8 @@ Route::middleware('auth:admin')
         Route::resource('meeting', MeetingController::class);
         Route::post('meeting/destroy-multiples', [MeetingController::class, 'destroyMultiples'])->name('meeting.destroy-multiples');
 
-        Route::prefix('content')->group(function () {
-            Route::get('top', [ContentController::class, 'top'])->name('content.top');
-            Route::put('{content}/set-position', [ContentController::class, 'setPosition'])->name('content.set-position');
-            Route::put('{content}/remove-position', [ContentController::class, 'removePosition'])->name('content.remove-position');
-
-            Route::get('{content}/titles', [ContentController::class, 'titles'])->name('content.titles');
-            Route::get('export', [ContentController::class, 'export'])->name('content.export');
-        });
-
-        Route::resource('content', ContentController::class);
-        Route::post('content/destroy-multiples', [ContentController::class, 'destroyMultiples'])->name('content.destroy-multiples');
-
-        Route::resource('content.extra', ContentExtraController::class);
-        Route::resource('content.season', SeasonController::class);
-        Route::resource('content.chapter', ContentChapterController::class)->only(['index', 'store', 'update', 'destroy']);;
-        Route::resource('content.season.chapter', ContentSeasonChapterController::class)->only(['store', 'update', 'destroy']);
+        Route::resource('course', CourseController::class);
+        Route::post('course/destroy-multiples', [CourseController::class, 'destroyMultiples'])->name('content.destroy-multiples');
 
         Route::resource('quizz', QuizzController::class);
         Route::post('quizz/destroy-multiples', [QuizzController::class, 'destroyMultiples'])->name('quizz.destroy-multiples');

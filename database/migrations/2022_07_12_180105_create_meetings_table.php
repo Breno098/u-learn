@@ -30,7 +30,6 @@ class CreateMeetingsTable extends Migration
             $table->text('description_offer')->nullable();
             $table->string('embed_offer')->nullable();
             $table->boolean('has_link_with_content')->default(false)->nullable();
-            $table->foreignId('content_id')->nullable()->constrained();
             $table->nullableMorphs('linkable');
             $table->timestamps();
         });

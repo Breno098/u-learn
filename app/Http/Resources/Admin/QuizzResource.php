@@ -43,7 +43,7 @@ class QuizzResource extends JsonResource
                     'name' => $alternative->name
                 ])
             ]),
-            'content_id' => $quizz->content_id,
+            'course_id' => $quizz->course_id,
             'content' => [
                 'id' => $quizz->content->id,
                 'name' => $quizz->content->name,

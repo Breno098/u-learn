@@ -26,7 +26,6 @@ class CreateLiveEventsTable extends Migration
             $table->foreignId('responsible_id')->nullable()->constrained('users');
             $table->integer('number_of_students')->nullable();
             $table->boolean('has_link_with_content')->default(false)->nullable();
-            $table->foreignId('content_id')->nullable()->constrained();
             $table->nullableMorphs('linkable');
             $table->timestamps();
         });

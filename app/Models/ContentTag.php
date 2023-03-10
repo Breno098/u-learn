@@ -23,7 +23,7 @@ class ContentTag extends Pivot
      */
     protected $fillable = [
         'type',
-        'content_id',
+        'course_id',
         'content_tag_id'
     ];
 

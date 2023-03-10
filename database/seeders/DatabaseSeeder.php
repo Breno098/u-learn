@@ -19,20 +19,19 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             GroupSeeder::class,
             StudentSeeder::class,
-            SectionSeeder::class,
             CategorySeeder::class,
             GenreSeeder::class,
-            ContentSeeder::class,
-            LiveEventSeeder::class,
-            MeetingSeeder::class,
-            JobVacancySeeder::class,
-            PartnerSeeder::class,
-            CampaignSeeder::class,
+            CourseSeeder::class,
+            // LiveEventSeeder::class,
+            // MeetingSeeder::class,
+            // JobVacancySeeder::class,
+            // PartnerSeeder::class,
+            // CampaignSeeder::class,
             CommonQuestionSeeder::class,
-            ProductSeeder::class,
-            OrderSeeder::class,
-            ItemSeeder::class,
-            QuizzSeeder::class
+            // ProductSeeder::class,
+            // OrderSeeder::class,
+            // ItemSeeder::class,
+            // QuizzSeeder::class
         ]);
     }
 }

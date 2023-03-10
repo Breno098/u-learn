@@ -19,7 +19,7 @@ class CreateExtrasTable extends Migration
             $table->string('name')->nullable();
             $table->enum('player', ['vimeo', 'sambatech']);
             $table->string('embed')->nullable();
-            $table->foreignId('content_id')->constrained();
+            $table->foreignId('course_id')->constrained();
             $table->timestamps();
         });
     }

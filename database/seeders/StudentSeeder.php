@@ -16,7 +16,5 @@ class StudentSeeder extends Seeder
     public function run()
     {
         Student::factory(random_int(20, 40))->hasAttached(Group::all()->random())->create();
-
-        Student::factory(random_int(20, 40))->hasAttached(Group::all()->random())->equalData()->create();
     }
 }

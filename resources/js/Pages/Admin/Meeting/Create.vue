@@ -38,7 +38,7 @@
         image: null,
         linkable_id: null,
         linkable_type: 'content',
-        content_id: null,
+        course_id: null,
         has_link_with_content: false,
     });
 
@@ -172,7 +172,7 @@
         loadingOptionsSeasonsOrChapters.value = true;
 
         if (form.linkable_type !== 'content') {
-            let url = route('admin.quizz.linkables', {content: form.content_id, type: form.linkable_type});
+            let url = route('admin.quizz.linkables', {content: form.course_id, type: form.linkable_type});
 
             axios.get(url).then(response => {
                 response.data.items.forEach(element => {
@@ -439,16 +439,16 @@
                         emit-value
                         map-options
                         outlined
-                        v-model="form.content_id"
+                        v-model="form.course_id"
                         label="Vincular ao conteúdo"
-                        :bottom-slots="Boolean(errors.content_id)"
+                        :bottom-slots="Boolean(errors.course_id)"
                         clearable
                         use-input
                         @filter="filterContents"
                         @update:model-value="fetchTypeSelected"
                     >
                         <template v-slot:hint>
-                            <div class="text-red"> {{ errors.content_id }} </div>
+                            <div class="text-red"> {{ errors.course_id }} </div>
                         </template>
 
                         <template v-slot:selected-item="scope">
@@ -470,7 +470,7 @@
 
                 <div class="col-12 col-md-4" v-if="form.has_link_with_content">
                     <q-select
-                        v-if="form.content_id"
+                        v-if="form.course_id"
                         :options="optionsLinkableTypes"
                         emit-value
                         map-options

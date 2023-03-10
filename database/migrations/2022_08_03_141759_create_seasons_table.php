@@ -16,7 +16,7 @@ class CreateSeasonsTable extends Migration
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('content_id')->constrained();
+            $table->foreignId('course_id')->constrained();
             $table->integer('number')->default(1);
             $table->integer('number_of_chapters')->default(1);
             $table->string('image')->nullable();

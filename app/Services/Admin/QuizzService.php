@@ -49,7 +49,7 @@ class QuizzService
         }
 
         if ($orderBy === 'content_name') {
-            $query->join('contents', 'quizzes.content_id', '=', 'contents.id')->orderBy('contents.name', $sort);
+            $query->join('contents', 'quizzes.course_id', '=', 'contents.id')->orderBy('contents.name', $sort);
         } else if (in_array($orderBy, (new Quizz)->getFillable())) {
             $query->orderBy("quizzes.{$orderBy}", $sort);
         }
@@ -130,7 +130,7 @@ class QuizzService
             'description' => Arr::get($requestData, 'description'),
             'linkable_id' => Arr::get($requestData, 'linkable_id'),
             // 'linkable_type' => Arr::get($requestData, 'linkable_type'),
-            'content_id' => Arr::get($requestData, 'content_id'),
+            'course_id' => Arr::get($requestData, 'course_id'),
         ];
     }
 

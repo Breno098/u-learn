@@ -43,7 +43,7 @@ class Quizz extends Model
         'answer_file',
         'linkable_id',
         'linkable_type',
-        'content_id'
+        'course_id'
     ];
 
     /**
