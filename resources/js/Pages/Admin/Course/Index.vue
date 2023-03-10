@@ -22,16 +22,17 @@
         align: 'left',
         label: 'Nome',
         field: 'name',
-        style: 'width: 25%',
+        style: 'width: 50%',
     }, {
         name: 'category_name',
         align: 'left',
         label: 'Categoria',
         field: course => course.category.name,
-        style: 'width: 10%',
+        style: 'width: 40%',
     }, {
         name: 'actions',
         label: 'Ação',
+        style: 'width: 10%',
     }];
 
     const requestData = useForm({
@@ -369,21 +370,6 @@
                 </q-table>
 
                 <div class="row items-center text-grey">
-                    <q-btn
-                        color="primary"
-                        no-caps
-                        outline
-                        rounded
-                        flat
-                        @click="exportExcel()"
-                    >
-                        <q-icon name="save_alt" size="xs"/>
-
-                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                            Exportar excel
-                        </div>
-                    </q-btn>
-
                     <q-space/>
 
                     <div class="row items-center text-grey">

@@ -16,7 +16,7 @@ class CourseFactory extends Factory
         return [
             'name' => fake()->streetName(),
             'descritiption' => fake()->realText(100),
-            'level' => fake()->randomElement(['iniciante', 'intermediário', 'avançado']),
+            'level' => fake()->randomElement(['iniciante', 'intermediario', 'avancado']),
             'duration' => fake()->date(),
             'video' => fake()->url(),
             'url_sale' => fake()->url(),

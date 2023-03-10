@@ -23,6 +23,7 @@ class CourseResource extends JsonResource
         return [
             'id' => $course->id,
             'name' => $course->name,
+            'descritiption' => $course->descritiption,
             'category_id' => $course->category_id,
             'category' => new CategoryResource($course->category),
             'level' => $course->level,

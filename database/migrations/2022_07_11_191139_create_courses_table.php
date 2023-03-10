@@ -17,7 +17,7 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('descritiption')->nullable();
-            $table->enum('level', ['iniciante', 'intermediário', 'avançado'])->nullable();
+            $table->enum('level', ['iniciante', 'intermediario', 'avancado'])->nullable();
             $table->timestamp('duration')->nullable();
             $table->string('video')->nullable();
             $table->text('url_sale')->nullable();
