@@ -15,7 +15,7 @@ class CreateChapterQuizzTable extends Migration
     {
         Schema::create('chaper_quizz', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chapter_id')->constrained();
+            $table->foreignId('lesson_id')->constrained();
             $table->foreignId('quizz_id')->constrained('quizzes');
             $table->timestamps();
         });

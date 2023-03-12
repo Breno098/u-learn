@@ -14,10 +14,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $name
  * @property string $number
  * @property string $image
- * @property int $number_of_chapters
- * @property Content $content
+ * @property Course $course
+ * @property Lesson[] $lessons
  */
-class Season extends Model
+class Module extends Model
 {
     use HasFactory;
 
@@ -28,9 +28,8 @@ class Season extends Model
      */
     protected $fillable = [
         'name',
-        'number',
-        'number_of_chapters',
         'image',
+        'number'
     ];
 
     /**
@@ -39,8 +38,6 @@ class Season extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
     ];
 
      /**
@@ -48,18 +45,18 @@ class Season extends Model
      */
 
     /**
-     * @return Content|BelongsTo
+     * @return Course|BelongsTo
      */
-    public function content(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(Content::class);
+        return $this->belongsTo(Course::class);
     }
 
     /**
-     * @return Chapter[]|Collection|MorphMany
+     * @return Lesson[]|HasMany|Collection
      */
-    public function chapters(): MorphMany|Collection
+    public function lessons(): HasMany|Collection
     {
-        return $this->morphMany(Chapter::class, 'chapterable')->orderBy('number');
+        return $this->hasMany(Lesson::class)->orderBy('number');
     }
 }

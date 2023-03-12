@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Genre;
+use App\Models\Lesson;
+use App\Models\Module;
 use Illuminate\Database\Seeder;
 
 class CourseSeeder extends Seeder
@@ -21,16 +23,15 @@ class CourseSeeder extends Seeder
             ->for(Category::all()->random())
             ->create()
             ->each(function(Course $course) {
-                // foreach (range(1, $Course->number_of_seasons) as $number) {
-                //     $season = $Course->seasons()->create(Season::factory()->make([
-                //         'number' => $number,
-                //         'number_of_chapters' => random_int(1, 5)
-                //     ])->toArray());
+                foreach (range(1, 5) as $number) {
+                    $module = $course->modules()->create(Module::factory()->make([
+                        'number' => $number,
+                    ])->toArray());
 
-                //     foreach (range(1, $season->number_of_chapters) as $chapterNumber) {
-                //         $season->chapters()->create(Chapter::factory()->make(['number' => $chapterNumber])->toArray());
-                //     }
-                // }
+                    foreach (range(1, 5) as $_number) {
+                        $module->lessons()->create(Lesson::factory()->make(['number' => $_number])->toArray());
+                    }
+                }
             });
     }
 }

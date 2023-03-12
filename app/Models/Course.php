@@ -22,8 +22,7 @@ use Illuminate\Support\Collection;
  * @property int $certificate_id
  * @property string $wallpaper_image
  * @property string $tumb_image
- * @property Season[]|Collection $seasons
- * @property Chapter $chapter
+ * @property Module[]|Collection $modules
  * @property Category $category
  * @property Genre $genre
  *
@@ -80,19 +79,11 @@ class Course extends Model
     }
 
     /**
-     * @return Chapter|MorphOne
+     * @return Module[]|Collection|HasMany
      */
-    public function chapter(): Chapter|MorphOne
+    public function modules(): HasMany|Collection
     {
-        return $this->morphOne(Chapter::class, 'chapterable');
-    }
-
-    /**
-     * @return Season[]|Collection|HasMany
-     */
-    public function seasons(): HasMany|Collection
-    {
-        return $this->hasMany(Season::class)->orderBy('number');
+        return $this->hasMany(Module::class)->orderBy('number');
     }
 
     /**
