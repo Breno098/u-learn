@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\JobVacancyController;
 use App\Http\Controllers\Admin\LiveEventController;
 use App\Http\Controllers\Admin\MeetingController;
+use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PartnerController;
@@ -22,7 +23,6 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\QuizzController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ScheduleController;
-use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -83,9 +83,6 @@ Route::middleware('auth:admin')
         Route::resource('category', CategoryController::class);
         Route::post('category/destroy-multiples', [CategoryController::class, 'destroyMultiples'])->name('category.destroy-multiples');
 
-        Route::resource('section', SectionController::class);
-        Route::post('section/destroy-multiples', [SectionController::class, 'destroyMultiples'])->name('section.destroy-multiples');
-
         Route::resource('group', GroupController::class);
         Route::post('group/destroy-multiples', [GroupController::class, 'destroyMultiples'])->name('group.destroy-multiples');
 
@@ -115,6 +112,8 @@ Route::middleware('auth:admin')
 
         Route::resource('course', CourseController::class);
         Route::post('course/destroy-multiples', [CourseController::class, 'destroyMultiples'])->name('course.destroy-multiples');
+
+        Route::resource('course.module', ModuleController::class);
 
         Route::resource('quizz', QuizzController::class);
         Route::post('quizz/destroy-multiples', [QuizzController::class, 'destroyMultiples'])->name('quizz.destroy-multiples');

@@ -8,10 +8,9 @@ use App\Models\Season;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-class SeasonService
+class ModuleService
 {
     /**
      * @param Content $content

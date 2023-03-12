@@ -34,6 +34,7 @@ class CourseResource extends JsonResource
             'certificate_id' => $course->certificate_id,
             'wallpaper_image' => $course->wallpaper_image,
             'tumb_image' => $course->tumb_image,
+            'genres_ids'=> $course->genres_ids,
             'genres' => GenreResource::collection($course->genres),
         ];
     }

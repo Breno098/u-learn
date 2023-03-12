@@ -28,6 +28,8 @@
         wallpaper_image: props.course.wallpaper_image,
         tumb_image: props.course.tumb_image,
         genres: props.course.genres.map(s => s.id),
+
+        modules: props.course.modules,
     });
 
     const submit = () => {
@@ -118,6 +120,10 @@
     }
 
     const goBack = () =>  useForm().get(route('admin.course.index'));
+
+    const goModules = () =>  useForm().get(route('admin.course.module.index', {
+        course: props.course.id
+    }));
 </script>
 
 <template>
@@ -159,6 +165,17 @@
 
         <q-card flat>
             <q-card-section class="q-pb-none q-py-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute"
+                    icon="o_view_agenda"
+                    style="top: 0; right: 12px; transform: translateY(-50%);"
+                    label="Módulos"
+                    no-caps
+                    @click="goModules"
+                />
+
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 items-center">
                         <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
