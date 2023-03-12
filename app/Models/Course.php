@@ -96,14 +96,6 @@ class Course extends Model
     }
 
     /**
-     * @return Extra[]|Collection|HasMany
-     */
-    public function extras(): HasMany|Collection
-    {
-        return $this->hasMany(Extra::class);
-    }
-
-    /**
      * Attributes
      */
 

@@ -6,8 +6,8 @@ return [
             [
                 'route' => 'admin.home',
                 'active' => 'admin.home*',
-                'label' => 'Dashboard',
-                'icon' => 'show_chart',
+                'label' => 'Home',
+                'icon' => 'o_home',
             ]
         ]
     ],

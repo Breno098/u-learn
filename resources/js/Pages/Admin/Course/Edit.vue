@@ -2,7 +2,7 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar';
-    import { ref, computed } from 'vue'
+    import { ref } from 'vue'
     import { useDropzone } from "vue3-dropzone";
     import AdminDialog from '@/Components/AdminDialog.vue';
 
@@ -49,7 +49,7 @@
             })
     };
 
-    function destroy() {
+    const destroy = () => {
         $q.dialog({
             component: AdminDialog,
             componentProps: {
@@ -73,9 +73,9 @@
         });
     }
 
-    const wallpaperSrc = computed(() => {
-        return form.wallpaper_image == null ? '' : (typeof form.wallpaper_image === 'object') ? URL.createObjectURL(form.wallpaper_image) : form.wallpaper_image;
-    });
+    const srcImage = (field) => {
+        return field == null ? '' : (typeof field === 'object') ? URL.createObjectURL(field) : field;
+    }
 
     const dropZoneWallpaper = useDropzone({
         onDrop: (acceptFiles, rejectReasons) => {
@@ -90,10 +90,6 @@
     });
 
     const removeWallpaperImage = () => form.wallpaper_image = null;
-
-    const tumbImageSrc = computed(() => {
-        return form.tumb_image == null ? '' : (typeof form.tumb_image === 'object') ? URL.createObjectURL(form.tumb_image) : form.tumb_image;
-    });
 
     const dropZoneTumbImage = useDropzone({
         onDrop: (acceptFiles, rejectReasons) => {
@@ -121,64 +117,7 @@
         update(() => optionsGenres.value = props.genres.filter(s => s.name.toLowerCase().indexOf(val.toLowerCase()) > -1))
     }
 
-    const tab = ref('main')
-
-    const goExtraTab = () => {
-        if (form.isDirty) {
-            tab.value = 'main';
-
-            $q.dialog({
-                component: AdminDialog,
-                componentProps: {
-                    title: 'Alterações não salvas',
-                    message: 'Ao sair suas alterações serão perdidas. Tem certeza disso?',
-                    confirm: true
-                }
-            }).onOk(() => {
-                useForm().get(route('admin.course.extra.index', props.course.id))
-            })
-        } else {
-            useForm().get(route('admin.course.extra.index', props.course.id))
-        }
-    };
-
-    const goTitlesTab = () => {
-        if (form.isDirty) {
-            tab.value = 'main';
-
-            $q.dialog({
-                component: AdminDialog,
-                componentProps: {
-                    title: 'Alterações não salvas',
-                    message: 'Ao sair suas alterações serão perdidas. Tem certeza disso?',
-                    confirm: true
-                }
-            }).onOk(() => {
-                useForm().get(route('admin.course.titles', props.course.id))
-            })
-        } else {
-            useForm().get(route('admin.course.titles', props.course.id))
-        }
-    };
-
-    const goBack = () => {
-        if (form.isDirty) {
-            tab.value = 'main';
-
-            $q.dialog({
-                component: AdminDialog,
-                componentProps: {
-                    title: 'Alterações não salvas',
-                    message: 'Ao sair suas alterações serão perdidas. Tem certeza disso?',
-                    confirm: true
-                }
-            }).onOk(() => {
-                useForm().get(route('admin.course.index'))
-            })
-        } else {
-            useForm().get(route('admin.course.index'))
-        }
-    };
+    const goBack = () =>  useForm().get(route('admin.course.index'));
 </script>
 
 <template>
@@ -219,34 +158,7 @@
         </q-card>
 
         <q-card flat>
-            <q-tabs
-                v-model="tab"
-                dense
-                class="text-grey adm-br-tl-16 adm-br-tr-16"
-                active-color="indigo"
-                indicator-color="indigo"
-                align="justify"
-                no-caps
-            >
-                <q-tab
-                    name="main"
-                    label="Dados do curso"
-                />
-
-                <q-tab
-                    name="titles"
-                    label="Títulos"
-                    @click="goTitlesTab"
-                />
-
-                <q-tab
-                    name="extras"
-                    label="Extras"
-                    @click="goExtraTab"
-                />
-            </q-tabs>
-
-            <q-card-section class="q-pb-none q-pt-lg">
+            <q-card-section class="q-pb-none q-py-lg">
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 items-center">
                         <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
@@ -389,9 +301,9 @@
                         </div>
                     </div>
 
-                    <div class="col-12" v-if="wallpaperSrc">
+                    <div class="col-12" v-if="form.wallpaper_image">
                         <q-img
-                            :src="wallpaperSrc"
+                            :src="srcImage(form.wallpaper_image)"
                             style="height: 400px"
                             class="adm-br-5"
                         >
@@ -446,9 +358,9 @@
                         </div>
                     </div>
 
-                    <div class="col-12" v-if="tumbImageSrc">
+                    <div class="col-12" v-if="form.tumb_image">
                         <q-img
-                            :src="tumbImageSrc"
+                            :src="srcImage(form.tumb_image)"
                             style="height: 400px"
                             class="adm-br-5"
                         >

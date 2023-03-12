@@ -139,9 +139,9 @@
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <Head title="Cursos" />
+    <Head title="Cursos" />
 
+    <AuthenticatedLayout>
         <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
                 <div class="flex col-12 col-md-6 justify-start items-center">
