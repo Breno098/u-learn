@@ -28,11 +28,10 @@
         align: 'left',
         label: 'Categoria',
         field: course => course.category.name,
-        style: 'width: 40%',
+        style: 'width: 50%',
     }, {
         name: 'actions',
         label: 'Ação',
-        style: 'width: 10%',
     }];
 
     const requestData = useForm({
@@ -167,7 +166,7 @@
                         no-caps
                         @click="create"
                         icon="add"
-                        label="Novo Curso"
+                        label="Novo curso"
                     />
                 </div>
             </q-card-section>
@@ -198,7 +197,7 @@
                         <q-input
                             outlined
                             v-model="requestData.filters.name"
-                            label="Nome do Curso"
+                            label="Nome do curso"
                             color="indigo"
                             @keydown.enter.prevent="submit"
                         />
@@ -324,20 +323,6 @@
 
                                             <q-separator/>
 
-                                            <!-- <q-item
-                                                clickable
-                                                @click="show(props.row.id)"
-                                                class="text-grey-7 flex items-center"
-                                            >
-                                                <q-icon name="visibility" size="xs" color="indigo" />
-
-                                                <q-item-section no-wrap>
-                                                    <div class="q-ml-sm"> Vizualizar </div>
-                                                </q-item-section>
-                                            </q-item>
-
-                                            <q-separator/> -->
-
                                             <q-item
                                                 v-if="canCourseDestroy"
                                                 clickable
@@ -353,17 +338,6 @@
                                         </q-list>
                                     </q-menu>
                                 </q-btn>
-
-                                <!-- <q-btn
-                                    v-else
-                                    @click="show(props.row.id)"
-                                    class="text-grey-7 flex flex-center text-no-wrap"
-                                    flat
-                                    no-caps
-                                >
-                                    <q-icon name="visibility" size="xs"/>
-                                    <div class="q-ml-sm"> Visualizar </div>
-                                </q-btn> -->
                             </div>
                         </q-td>
                     </template>

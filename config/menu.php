@@ -91,15 +91,8 @@ return [
                 'route' => 'admin.category.index',
                 'active' => 'admin.category*',
                 'label' => 'Categorias',
-                'icon' => 'format_align_left',
+                'icon' => 'list_alt',
                 'can' => 'category_index'
-            ],
-            [
-                'route' => 'admin.section.index',
-                'active' => 'admin.section*',
-                'label' => 'Seções',
-                'icon' => 'grid_view',
-                'can' => 'section_index'
             ],
             [
                 'route' => 'admin.product.index',
@@ -107,13 +100,6 @@ return [
                 'label' => 'Produto',
                 'icon' => 'local_mall',
                 'can' => 'product_index'
-            ],
-            [
-                'route' => 'admin.item.index',
-                'active' => 'admin.item*',
-                'label' => 'Brindes',
-                'icon' => 'card_giftcard',
-                'can' => 'item_index'
             ],
             [
                 'route' => 'admin.student.index',

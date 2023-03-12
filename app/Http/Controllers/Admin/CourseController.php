@@ -110,26 +110,6 @@ class CourseController extends Controller
         ]);
     }
 
-     /**
-     * @param Course $course
-     * @return Response
-     */
-    public function show(Course $course): Response
-    {
-        Authorize::abortIfNot('course_show');
-
-        $categories = Category::select('id', 'name')->orderBy('name')->get();
-        $courses = Course::select('id', 'name')->orderBy('name')->get();
-        $genres = Genre::select('id', 'name')->orderBy('name')->get();
-
-        return inertia('Admin/Course/Show',  [
-            'course' => new CourseResource($course),
-            'categories' => $categories,
-            'courses' => $courses,
-            'genres' => $genres,
-        ]);
-    }
-
     /**
      * @param CourseUpdateRequest $courseUpdateRequest
      * @param Course $course

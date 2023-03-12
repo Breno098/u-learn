@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Models\Category;
-use App\Models\Content;
+use App\Models\Course;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -62,8 +62,8 @@ class CategoryService
      */
     public function delete(Category $category): ?bool
     {
-        $category->contents->map(function(Content $content){
-            $content->category()->dissociate()->save();
+        $category->courses->map(function(Course $course){
+            $course->category()->dissociate()->save();
         });
 
         return $category->delete();

@@ -2,8 +2,7 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
-    import { Inertia } from '@inertiajs/inertia';
-    import DialogConfirm from '@/Components/DialogConfirm.vue';
+    import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
 
@@ -19,30 +18,37 @@
 
     const submit = () => {
         form.put(route("admin.category.update", form.id), {
-                onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Categoria atualizado com sucesso',
-                        position: 'top',
-                    })
-                },
-            })
+            onSuccess: () => {
+                $q.dialog({
+                    component: AdminDialog,
+                    componentProps: {
+                        message: 'Categoria atualizada com sucesso',
+                        icon: { name: 'check', color: 'green' },
+                        timeout: 1000
+                    }
+                })
+            },
+        })
     };
 
-    function destroy() {
+    const destroy = () => {
         $q.dialog({
-            component: DialogConfirm,
+            component: AdminDialog,
             componentProps: {
                 title: 'Excluir categoria',
-                message: 'Tem certeza que deseja excluir essa categoria?',
+                message: 'Ao excluir a categoria, todos os cursos serão desvinculados. Deseja realmente excluir?',
+                confirm: true
             },
         }).onOk(() => {
-            Inertia.delete(route('admin.category.destroy', form.id), {
+            useForm().delete(route('admin.category.destroy', form.id), {
                 onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Categoria excluído com sucesso',
-                        position: 'top',
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Categoria excluída com sucesso',
+                            icon: { name: 'check', color: 'green' },
+                            timeout: 3000
+                        }
                     })
                 }
             })
@@ -52,75 +58,65 @@
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Categoria | Editar" />
+        <Head :title="category.name" />
 
-        <div class="row q-mb-lg">
-            <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Editar categoria </div>
+        <q-card flat class="q-mb-lg">
+            <q-card-section class="row items-center q-px-lg">
+                <div class="flex col-12 col-md-6 justify-start items-center">
+                    <q-icon name="o_school" color="indigo" size="md"/>
 
-                <q-breadcrumbs
-                    class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
-                    gutter="xs"
-                >
-                    <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Categorias" class="text-grey"/>
-                    <q-breadcrumbs-el label="Editar categoria" class="text-primary" />
-                </q-breadcrumbs>
-            </div>
-
-            <div class="col-12 col-md-6 flex justify-end items-center">
-                <q-btn
-                    color="negative"
-                    class="q-mr-md"
-                    rounded
-                    no-caps
-                    outline
-                    @click="destroy"
-                >
-                    <q-icon name="close" size="xs"/>
-
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Excluir categoria
-                    </div>
-                </q-btn>
-
-                <q-btn
-                    color="primary"
-                    rounded
-                    no-caps
-                    @click="submit"
-                    :disabled="form.processing"
-                >
-                    <q-icon name="check" size="xs"/>
-
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Salvar categoria
-                    </div>
-                </q-btn>
-            </div>
-        </div>
-
-        <div class="bg-white q-py-lg q-px-lg adm-br-16">
-            <div class="row q-col-gutter-lg">
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Informações
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md">
+                        Categoria: {{ category.name }}
                     </div>
                 </div>
 
-                <div class="col-12 col-md-12">
-                    <q-input
-                        outlined
-                        v-model="form.name"
-                        label="Nome"
-                        :bottom-slots="Boolean(errors.name)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.name }} </div>
-                        </template>
-                    </q-input>
+                <div class="col-12 col-md-6 flex justify-end items-center">
+                    <q-btn
+                        color="negative"
+                        class="q-mr-md"
+                        no-caps
+                        outline
+                        @click="destroy"
+                        icon="close"
+                        label="Excluir"
+                    />
+
+                    <q-btn
+                        color="indigo"
+                        no-caps
+                        @click="submit"
+                        :disabled="form.processing"
+                        icon="check"
+                        label="Salvar"
+                    />
                 </div>
-            </div>
-        </div>
+            </q-card-section>
+        </q-card>
+
+        <q-card flat>
+            <q-card-section class="q-pb-none q-py-lg">
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Informações
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-12">
+                        <q-input
+                            outlined
+                            v-model="form.name"
+                            label="Nome da categoria"
+                            :bottom-slots="Boolean(errors.name)"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.name }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+                </div>
+            </q-card-section>
+        </q-card>
     </AuthenticatedLayout>
 </template>

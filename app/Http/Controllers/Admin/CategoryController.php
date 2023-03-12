@@ -95,19 +95,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Category  $category
-     * @return Response
-     */
-    public function show(Category $category): Response
-    {
-        Authorize::abortIfNot('category_show');
-
-        return inertia('Admin/Category/Show', [
-            'category' => new CategoryResource($category)
-        ]);
-    }
-
-    /**
      * @param CategoryUpdateRequest $categoryUpdateRequest
      * @param Category $category
      * @return RedirectResponse

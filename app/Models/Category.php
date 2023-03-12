@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
  * @property string $name
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Content[]|Collection $contents
+ * @property Course[]|Collection $courses
  *
  * @method Builder filterName(string|null $name)
  */
@@ -34,20 +34,10 @@ class Category extends Model
      * Relationships
      */
     /**
-     * @return Content[]|Collection|HasMany
+     * @return Course[]|Collection|HasMany
      */
-    public function contents(): HasMany|Collection
+    public function courses(): HasMany|Collection
     {
-        return $this->hasMany(Content::class);
-    }
-
-    /**
-     * Scopes
-     */
-    public function scopeFilterName(Builder $builder, $name)
-    {
-        return $builder->when($name, function (Builder $builder, $name) {
-            return $builder->where('name', 'like', "%{$name}%");
-        });
+        return $this->hasMany(Course::class);
     }
 }

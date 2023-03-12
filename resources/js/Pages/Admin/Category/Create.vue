@@ -2,10 +2,12 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
+    import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
 
     const props = defineProps({
+        category: Object,
         errors: Object,
     });
 
@@ -17,89 +19,70 @@
     const submit = () => {
         form.post(route("admin.category.store"), {
             onSuccess: () => {
-                $q.notify({
-                    type: 'positive',
-                    message: 'Categoria cadastrada com sucesso',
-                    position: 'top',
+                $q.dialog({
+                    component: AdminDialog,
+                    componentProps: {
+                        message: 'Categoria cadastrada com sucesso',
+                        icon: { name: 'check', color: 'green' },
+                        timeout: 1000
+                    }
                 })
             },
         })
     };
-
-    const goBack = () => useForm().get(route('admin.category.index'))
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Categoria | Adicionar" />
+        <Head title="Nova categoria" />
 
-        <div class="row q-mb-lg">
-            <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Nova categoria </div>
+        <q-card flat class="q-mb-lg">
+            <q-card-section class="row items-center q-px-lg">
+                <div class="flex col-12 col-md-6 justify-start items-center">
+                    <q-icon name="o_school" color="indigo" size="md"/>
 
-                <q-breadcrumbs
-                    class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
-                    gutter="xs"
-                >
-                    <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Categorias" class="text-grey"/>
-                    <q-breadcrumbs-el label="Nova Categoria" class="text-primary" />
-                </q-breadcrumbs>
-            </div>
-        </div>
-
-        <div class="bg-white q-py-lg q-px-lg adm-br-16">
-            <div class="row q-col-gutter-lg">
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Informações
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md">
+                        Nova categoria
                     </div>
                 </div>
 
-                <div class="col-12 col-md-12">
-                    <q-input
-                        outlined
-                        v-model="form.name"
-                        label="Nome"
-                        :bottom-slots="Boolean(errors.name)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.name }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 flex justify-end items-center">
+                <div class="col-12 col-md-6 flex justify-end items-center">
                     <q-btn
-                        color="primary"
-                        class="q-mr-md"
-                        rounded
-                        no-caps
-                        outline
-                        @click="goBack"
-                    >
-                        <q-icon name="chevron_left" size="xs"/>
-
-                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                            Voltar
-                        </div>
-                    </q-btn>
-
-                    <q-btn
-                        color="primary"
-                        rounded
+                        color="indigo"
                         no-caps
                         @click="submit"
                         :disabled="form.processing"
-                    >
-                        <q-icon name="add" size="xs"/>
-
-                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                            Criar categoria
-                        </div>
-                    </q-btn>
+                        icon="check"
+                        label="Salvar"
+                    />
                 </div>
-            </div>
-        </div>
+            </q-card-section>
+        </q-card>
+
+        <q-card flat>
+            <q-card-section class="q-pb-none q-py-lg">
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Informações
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-12">
+                        <q-input
+                            outlined
+                            v-model="form.name"
+                            label="Nome da categoria"
+                            :bottom-slots="Boolean(errors.name)"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.name }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+                </div>
+            </q-card-section>
+        </q-card>
     </AuthenticatedLayout>
 </template>
