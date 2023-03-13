@@ -76,8 +76,8 @@
                 $q.dialog({
                     component: AdminDialog,
                     componentProps: {
-                        message: 'Módulo ordenados com sucesso',
-                        icon: { name: 'check', color: 'green' },
+                        message: 'Módulos ordenados',
+                        icon: { name: 'playlist_add_check', color: 'green' },
                         timeout: 2000
                     }
                 })
@@ -90,6 +90,49 @@
     const restoreModules = () => {
         canDrag.value = false;
         modulesDrag.value = props.modules
+    }
+
+    const createLesson = () =>  useForm().get(route('admin.course.module.create', {
+        course: props.course.id
+    }));
+
+    const editLesson = (lesson, module) =>  useForm().get(route('admin.course.module.lesson.edit', {
+        course: props.course.id,
+        module: module.id,
+        lesson: lesson.id
+    }));
+
+    const destroyLesson = (lesson, module) => {
+        $q.dialog({
+            component: AdminDialog,
+            componentProps: {
+                title: 'Excluir aula',
+                message: `Deseja realmente excluir a aula ${lesson.name}?`,
+                confirm: true,
+                icon: { name: 'close', color: 'red' },
+            },
+        }).onOk(() => {
+            useForm().delete(route('admin.course.module.lesson.destroy', {
+                course: props.course.id,
+                module: module.id,
+                lesson: lesson.id
+            }), {
+                preserveState: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Módulo excluído com sucesso',
+                            icon: { name: 'check', color: 'green' },
+                            timeout: 3000
+                        }
+                    })
+
+                    restoreModules();
+                }
+            })
+        });
     }
 </script>
 
@@ -186,32 +229,24 @@
                         'q-mt-xl': canDrag
                     }"
                 >
-                    <template #item="{element, index}">
+                    <template #item="{element: moduleData, index}">
                         <q-card
                             flat
                             bordered
                             class="q-mt-md"
+                            :class="{'cursor-pointer': canDrag}"
                         >
-                            <q-card-section class="q-pa-none">
+                            <q-card-section class="q-py-none q-px-none">
                                 <div class="row">
                                     <div class="col-2 ">
                                         <q-img
-                                            :src="element.image"
-                                            :style="{
-                                                height: canDrag ? '100px' : '150px'
-                                            }"
+                                            :src="moduleData.image"
+                                            :style="{ height: canDrag ? '100px' : '150px' }"
                                         />
                                     </div>
 
-                                    <div
-                                        class="col-9 column justify-center q-pl-md"
-                                    >
-                                        <div class="adm-fs-16 adm-fw-700 text-blue-grey-10">
-                                            Temporada {{ element.number }}: {{ element.name }}
-                                        </div>
-                                        <div class="text-blue-grey-10">
-                                            {{ element.lessons.length ?? 0 }} {{ element.lessons.length > 1 ? 'episódios' : 'episódio' }}
-                                        </div>
+                                    <div class="col-9 column justify-center q-pl-md text-blue-grey-10 adm-fs-16 adm-fw-700">
+                                        Módulo {{ moduleData.number }}: {{ moduleData.name }}
                                     </div>
 
                                     <div class="col-1 flex flex-center">
@@ -220,7 +255,7 @@
                                                 <q-list>
                                                     <q-item
                                                         clickable
-                                                        @click="edit(element.id)"
+                                                        @click="edit(moduleData.id)"
                                                         class="text-blue-grey-10 flex items-center"
                                                     >
                                                         <q-icon name="edit" size="xs" color="indigo" />
@@ -234,7 +269,7 @@
 
                                                     <q-item
                                                         clickable
-                                                        @click="destroy(element.id)"
+                                                        @click="destroy(moduleData.id)"
                                                         class="text-blue-grey-10 flex items-center"
                                                     >
                                                         <q-icon name="close" size="xs" color="red"/>
@@ -250,7 +285,7 @@
                                         <q-icon
                                             name="swipe_vertical"
                                             color="indigo"
-                                            size="md"
+                                            size="sm"
                                             v-else
                                         />
                                     </div>
@@ -258,7 +293,7 @@
 
                                 <q-slide-transition>
                                     <div v-show="!canDrag">
-                                        <div v-if="element.lessons.length == 0" class="adm-br-16 flex flex-center text-blue-grey-10">
+                                        <div v-if="moduleData.lessons.length == 0" class="flex flex-center text-blue-grey-10">
                                             Nenhuma aula adicionada
                                         </div>
 
@@ -274,57 +309,80 @@
                                                             />
 
                                                             <div class="q-ml-sm">
-                                                                Aulas
+                                                                {{ moduleData.lessons.length }} {{ moduleData.lessons.length > 1 ? 'aulas' : 'aula' }}
                                                             </div>
                                                         </div>
                                                     </th>
                                                 </tr>
                                             </thead>
 
+                                            <!-- @todo Fazer ordenação de aulas -->
                                             <tbody>
-                                                <tr v-for="lesson in element.lessons">
-                                                    <td class="text-left" style="width: 5%;">{{ lesson.number }}</td>
-                                                    <td class="text-left" style="width: 10%; padding: 0">
-                                                        <q-img
-                                                            :src="lesson.wallpaper"
-                                                            style="height: 50px;"
-                                                        />
-                                                    </td>
-                                                    <td class="text-left" style="width: 85%;">{{ lesson.name }}</td>
-                                                    <td>
-                                                        <q-btn icon="more_vert" flat>
-                                                            <q-menu :offset="[75, 0]">
-                                                                <q-list>
-                                                                    <q-item
-                                                                        clickable
-                                                                        class="text-blue-grey-10 flex items-center"
-                                                                    >
-                                                                        <q-icon name="edit" size="xs" color="indigo" />
+                                                <draggable
+                                                    v-model="moduleData.lessons"
+                                                    item-key="number"
+                                                    :disabled="true"
+                                                >
+                                                    <template #item="{element: lesson, index}">
+                                                        <tr>
+                                                            <td class="text-left" style="width: 5%;">{{ lesson.number }}</td>
+                                                            <td class="text-left" style="width: 10%; padding: 0">
+                                                                <q-img
+                                                                    :src="lesson.wallpaper"
+                                                                    style="height: 50px;"
+                                                                />
+                                                            </td>
+                                                            <td class="text-left" style="width: 85%;">{{ lesson.name }}</td>
+                                                            <td>
+                                                                <q-btn icon="more_vert" flat>
+                                                                    <q-menu :offset="[75, 0]">
+                                                                        <q-list>
+                                                                            <q-item
+                                                                                clickable
+                                                                                class="text-blue-grey-10 flex items-center"
+                                                                                @click="editLesson(lesson, moduleData)"
+                                                                            >
+                                                                                <q-icon name="edit" size="xs" color="indigo" />
 
-                                                                        <q-item-section no-wrap>
-                                                                            <div class="q-ml-sm"> Editar aula </div>
-                                                                        </q-item-section>
-                                                                    </q-item>
+                                                                                <q-item-section no-wrap>
+                                                                                    <div class="q-ml-sm"> Editar aula </div>
+                                                                                </q-item-section>
+                                                                            </q-item>
 
-                                                                    <q-separator/>
+                                                                            <q-separator/>
 
-                                                                    <q-item
-                                                                        clickable
-                                                                        class="text-blue-grey-10 flex items-center"
-                                                                    >
-                                                                        <q-icon name="close" size="xs" color="red"/>
+                                                                            <q-item
+                                                                                clickable
+                                                                                class="text-blue-grey-10 flex items-center"
+                                                                                @click="destroyLesson(lesson, moduleData)"
+                                                                            >
+                                                                                <q-icon name="close" size="xs" color="red"/>
 
-                                                                        <q-item-section no-wrap>
-                                                                            <div class="q-ml-sm"> Excluir aula </div>
-                                                                        </q-item-section>
-                                                                    </q-item>
-                                                                </q-list>
-                                                            </q-menu>
-                                                        </q-btn>
-                                                    </td>
-                                                </tr>
+                                                                                <q-item-section no-wrap>
+                                                                                    <div class="q-ml-sm"> Excluir aula </div>
+                                                                                </q-item-section>
+                                                                            </q-item>
+                                                                        </q-list>
+                                                                    </q-menu>
+                                                                </q-btn>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </draggable>
                                             </tbody>
                                         </q-markup-table>
+
+                                        <div class="flex flex-center">
+                                            <q-btn
+                                                color="indigo"
+                                                no-caps
+                                                icon="add"
+                                                icon-right="class"
+                                                label="Adicionar aula"
+                                                outline
+                                                class="full-width"
+                                            />
+                                        </div>
                                     </div>
                                 </q-slide-transition>
                             </q-card-section>

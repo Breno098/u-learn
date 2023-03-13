@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Chapter;
+namespace App\Http\Requests\Admin\Lesson;
 
-use App\Enums\ChapterPlayerEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChapterStoreRequest extends FormRequest
+class LessonStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,16 +25,14 @@ class ChapterStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'description' => 'nullable|string',
             'number' => 'nullable|integer',
             'duration' => 'nullable|date_format:H:i',
-            'cast' => 'nullable|string',
             'direction' => 'nullable|string',
-            'main_player' => "required|in:" . implode(',', ChapterPlayerEnum::toValues()),
-            'vimeo_link' => 'nullable|url',
-            'vimeo_embed' => 'nullable|string',
-            'sambatech_link' => 'nullable|url',
-            'sambatech_embed' => 'nullable|string',
-            'image' => 'nullable',
+            'video' => 'nullable|url',
+            'release_type' => 'nullable|string',
+            'can_comments' => 'nullable|boolean',
+            'wallpaper' => 'nullable',
         ];
     }
 

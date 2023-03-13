@@ -2,10 +2,8 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Chapter;
-use App\Models\Content;
 use App\Models\Lesson;
-use App\Models\Season;
+use App\Models\Module;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -21,29 +19,27 @@ class LessonService
     {
         return [
             'name' => Arr::get($requestData, 'name'),
+            'description' => Arr::get($requestData, 'description'),
             'number' => Arr::get($requestData, 'number'),
             'duration' => Arr::get($requestData, 'duration'),
-            'cast' => Arr::get($requestData, 'cast'),
-            'direction' => Arr::get($requestData, 'direction'),
-            'main_player' => Arr::get($requestData, 'main_player'),
-            'vimeo_link' => Arr::get($requestData, 'vimeo_link'),
-            'vimeo_embed' => Arr::get($requestData, 'vimeo_embed'),
-            'sambatech_link' => Arr::get($requestData, 'sambatech_link'),
-            'sambatech_embed' => Arr::get($requestData, 'sambatech_embed'),
+            'video' => Arr::get($requestData, 'video'),
+            'wallpaper' => Arr::get($requestData, 'wallpaper'),
+            'release_type' => Arr::get($requestData, 'release_type'),
+            'can_comments' => Arr::get($requestData, 'can_comments'),
         ];
     }
 
     /**
-     * @param Chapter $chapter
+     * @param Lesson $lesson
      * @param null|string|UploadedFile $image
      * @return void
      */
-    public function uploadImage(Chapter $chapter, null|string|UploadedFile $image): void
+    public function uploadImage(Lesson $lesson, null|string|UploadedFile $image): void
     {
         if (! $image) {
-            $this->deleteImage($chapter);
+            $this->deleteImage($lesson);
         } else if ($image instanceof UploadedFile) {
-            $this->updateImage($chapter, $image);
+            $this->updateImage($lesson, $image);
         }
     }
 
@@ -61,95 +57,47 @@ class LessonService
     }
 
     /**
-     * @param Chapter $chapter
+     * @param Lesson $lesson
      * @param UploadedFile $image
      * @return void
      */
-    public function updateImage(Chapter $chapter, UploadedFile $image): void
+    public function updateImage(Lesson $lesson, UploadedFile $image): void
     {
-        $this->deleteImage($chapter);
+        $this->deleteImage($lesson);
 
-        $chapter->update([
+        $lesson->update([
             'image' => Storage::url(Storage::disk('public')->put('chapters', $image))
         ]);
     }
 
     /**
-     * @param Content $content
+     * @param Module $module
      * @param array $requestData
-     * @return Chapter
+     * @return Lesson
      */
-    public function storeForContent(Content $content, array $requestData = []): Chapter
+    public function store(Module $module, array $requestData = []): Lesson
     {
-        $chapter = $content->chapter()->create($this->transformData($requestData));
+        /** @var Lesson */
+        $lesson = $module->lessons()->create($this->transformData($requestData));
 
-        $this->uploadImage($chapter, Arr::get($requestData, 'image'));
+        $this->uploadImage($lesson, Arr::get($requestData, 'image'));
 
-        return $chapter;
+        return $lesson;
     }
 
-    /**
-     * @param Content $content
-     * @param Chapter $chapter
-     * @param array $requestData
-     * @return Chapter
-     */
-    public function updateForContent(Content $content, array $requestData = []): Chapter
+
+    public function update(Module $module, Lesson $lesson, array $requestData = []): Lesson
     {
-        $content->chapter->update($this->transformData($requestData));
+        /** @var Lesson|null */
+        $lesson = $module->lessons()->find($lesson->id);
 
-        $this->uploadImage($content->chapter, Arr::get($requestData, 'image'));
+        if ($lesson) {
+            $lesson->update($this->transformData($requestData));
 
-        return $content->chapter;
-    }
-
-    /**
-     * @param Content $content
-     * @param Chapter $chapter
-     * @return boolean|null
-     */
-    public function deleteForContent(Content $content): ?bool
-    {
-        if ($content->chapter) {
-            $this->deleteImage($content->chapter);
-            return $content->chapter->delete();
+            $this->uploadImage($lesson, Arr::get($requestData, 'image'));
         }
 
-        return false;
-    }
-
-    /**
-     * @param Season $season
-     * @param array $requestData
-     * @return Chapter
-     */
-    public function storeForSeason(Season $season, array $requestData = []): Chapter
-    {
-        /** @var Chapter */
-        $chapter = $season->chapters()->create($this->transformData($requestData));
-
-        $this->uploadImage($chapter, Arr::get($requestData, 'image'));
-
-        return $chapter;
-    }
-
-     /**
-     * @param Season $season
-     * @param Chapter $chapter
-     * @param array $requestData
-     * @return Chapter
-     */
-    public function updateForSeason(Season $season, Chapter $chapter, array $requestData = []): Chapter
-    {
-        /** @var Chapter|null */
-        $chapter = $season->chapters()->find($chapter->id);
-
-        if ($chapter) {
-            $chapter->update($this->transformData($requestData));
-            $this->uploadImage($chapter, Arr::get($requestData, 'image'));
-        }
-
-        return $chapter;
+        return $lesson;
     }
 
     /**

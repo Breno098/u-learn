@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\JobVacancyController;
+use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\LiveEventController;
 use App\Http\Controllers\Admin\MeetingController;
 use App\Http\Controllers\Admin\ModuleController;
@@ -115,6 +116,8 @@ Route::middleware('auth:admin')
 
         Route::resource('course.module', ModuleController::class);
         Route::post('course/{course}/module/reorder', [ModuleController::class, 'reorder'])->name('course.module.reorder');
+
+        Route::resource('course.module.lesson', LessonController::class);
 
         Route::resource('quizz', QuizzController::class);
         Route::post('quizz/destroy-multiples', [QuizzController::class, 'destroyMultiples'])->name('quizz.destroy-multiples');
