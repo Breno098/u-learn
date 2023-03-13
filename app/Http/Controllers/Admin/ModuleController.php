@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\Module;
 use App\Services\Admin\ModuleService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Response;
 
 class ModuleController extends Controller
@@ -95,7 +96,29 @@ class ModuleController extends Controller
      */
     public function destroy(Course $course, Module $module): RedirectResponse
     {
-        $this->moduleService->delete($course, $module);
+        $deleted = $this->moduleService->delete($course, $module);
+
+        if ($deleted) {
+            $this->moduleService->reorder($course, $course->modules->toArray());
+        }
+
+        return redirect()->route('admin.course.module.index', $course);
+    }
+
+
+    /**
+     * @param Course $course
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function reorder(Course $course, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'modules' => 'required|array',
+            'modules.*.id' => 'required|exists:modules,id',
+        ]);
+
+        $this->moduleService->reorder($course, $request->get('modules', []));
 
         return redirect()->route('admin.course.module.index', $course);
     }

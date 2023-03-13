@@ -222,7 +222,7 @@
                 <q-btn
                     dense
                     color="indigo"
-                    class="absolute"
+                    class="absolute inset-shadow-down"
                     @click="showFilters = !showFilters"
                     icon="filter_list"
                     style="top: 0; left: 12px; transform: translateY(-50%);"

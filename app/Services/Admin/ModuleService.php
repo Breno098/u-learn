@@ -48,13 +48,14 @@ class ModuleService
      */
     public function delete(Course $course, Module $module): bool|null
     {
+        /** @var Module */
         $module = $course->modules()->find($module->id);
 
         if ($module) {
             /** @var LessonService $lessonService */
             $lessonService= app(LessonService::class);
 
-            $module->lessons->map(fn(Lesson $lesson) => $lessonService->delete($lesson));
+            $module->lessons()->get()->map(fn(Lesson $lesson) => $lessonService->delete($lesson));
 
             $this->deleteImage($module);
 
@@ -116,6 +117,22 @@ class ModuleService
             $this->deleteImage($module);
         } else if ($image instanceof UploadedFile) {
             $this->updateImage($module, $image);
+        }
+    }
+
+    /**
+     * @param Course $course
+     * @param array $newPositions
+     * @return void
+     */
+    public function reorder(Course $course, array $newPositions = []): void
+    {
+        foreach ($newPositions as $key => $dataPosition) {
+            if ($id = Arr::get($dataPosition,'id')) {
+                /** @var Module */
+                $module = $course->modules()->find($id);
+                $module->update(['number' => $key + 1]);
+            }
         }
     }
 }

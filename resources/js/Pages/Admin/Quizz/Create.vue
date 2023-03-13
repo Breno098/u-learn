@@ -723,7 +723,7 @@
 
                             <q-btn
                                 color="white"
-                                class="absolute"
+                                class="absolute inset-shadow-down"
                                 style="top: 8px; right: 8px"
                                 flat
                                 icon="close"
@@ -939,7 +939,7 @@
 
                                 <q-btn
                                     color="white"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     style="top: 8px; right: 8px"
                                     flat
                                     icon="close"
@@ -1167,7 +1167,7 @@
 
                                 <q-btn
                                     color="white"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     style="top: 8px; right: 8px"
                                     flat
                                     icon="close"

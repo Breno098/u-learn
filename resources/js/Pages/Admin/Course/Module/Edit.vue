@@ -59,6 +59,10 @@
                 },
             })
     };
+
+    const goBack = () => useForm().get(route('admin.course.module.index', {
+        course: props.course.id
+    }));
 </script>
 
 <template>
@@ -90,6 +94,16 @@
 
         <q-card flat>
             <q-card-section class="q-pb-none q-py-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    icon="chevron_left"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                    label="Voltar"
+                    no-caps
+                    @click="goBack"
+                />
 
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 items-center">
@@ -141,7 +155,7 @@
                             <div class="absolute-bottom text-subtitle2 row items-center">
                                 <q-btn
                                     color="indigo"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="insert_link"
                                     v-bind="dropZoneImage.getRootProps()"
                                     style="top: 0; right: 80px; transform: translateY(-50%);"
@@ -153,7 +167,7 @@
 
                                 <q-btn
                                     color="red"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="o_hide_image"
                                     @click="removeImage"
                                     style="top: 0; right: 12px; transform: translateY(-50%);"

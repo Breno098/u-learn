@@ -168,7 +168,18 @@
                 <q-btn
                     dense
                     color="indigo"
-                    class="absolute"
+                    class="absolute inset-shadow-down"
+                    icon="chevron_left"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                    label="Voltar"
+                    no-caps
+                    @click="goBack"
+                />
+
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
                     icon="o_view_agenda"
                     style="top: 0; right: 12px; transform: translateY(-50%);"
                     label="Módulos"
@@ -327,7 +338,7 @@
                             <div class="absolute-bottom text-subtitle2 row items-center">
                                 <q-btn
                                     color="indigo"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="insert_link"
                                     v-bind="dropZoneWallpaper.getRootProps()"
                                     style="top: 0; right: 80px; transform: translateY(-50%);"
@@ -339,7 +350,7 @@
 
                                 <q-btn
                                     color="red"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="o_hide_image"
                                     @click="removeWallpaperImage"
                                     style="top: 0; right: 12px; transform: translateY(-50%);"
@@ -384,7 +395,7 @@
                             <div class="absolute-bottom text-subtitle2 row items-center">
                                 <q-btn
                                     color="indigo"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="insert_link"
                                     v-bind="dropZoneTumbImage.getRootProps()"
                                     style="top: 0; right: 80px; transform: translateY(-50%);"
@@ -396,7 +407,7 @@
 
                                 <q-btn
                                     color="red"
-                                    class="absolute"
+                                    class="absolute inset-shadow-down"
                                     icon="o_hide_image"
                                     @click="removeTumbImage"
                                     style="top: 0; right: 12px; transform: translateY(-50%);"
