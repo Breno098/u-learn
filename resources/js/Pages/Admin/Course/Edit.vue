@@ -28,7 +28,6 @@
         wallpaper_image: props.course.wallpaper_image,
         tumb_image: props.course.tumb_image,
         genres: props.course.genres.map(s => s.id),
-
         modules: props.course.modules,
     });
 

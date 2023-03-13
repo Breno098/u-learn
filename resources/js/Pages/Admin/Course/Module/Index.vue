@@ -166,6 +166,18 @@
                     v-if="canDrag"
                 />
 
+                <div v-if="canDrag" class="text-indigo row flex-center">
+                    <div class="q-mr-md">
+                        Arraste e solte para ordenar os módulos
+                    </div>
+
+                    <q-icon
+                        name="swipe_vertical"
+                        color="indigo"
+                        size="md"
+                    />
+                </div>
+
                 <draggable
                     v-model="modulesDrag"
                     item-key="number"
@@ -178,152 +190,143 @@
                         <q-card
                             flat
                             bordered
-                            class="q-mt-sm"
+                            class="q-mt-md"
                         >
                             <q-card-section class="q-pa-none">
-                                <q-expansion-item header-class="q-pa-none">
-                                    <template v-slot:header>
-                                        <div class="row full-width">
-                                            <div class="col-1 flex flex-center" v-if="canDrag">
-                                                <q-icon name="swipe_vertical" color="indigo" size="md"/>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-2 ">
+                                        <q-img
+                                            :src="element.image"
+                                            :style="{
+                                                height: canDrag ? '100px' : '150px'
+                                            }"
+                                        />
+                                    </div>
 
-                                            <div class="col-2 ">
-                                                <q-img :src="element.image" style="min-height: 152px;"/>
-                                            </div>
-
-                                            <div
-                                                class="column justify-center q-pl-md"
-                                                :class="{'col-9': !canDrag, 'col-8': canDrag}"
-                                            >
-                                                <div class="adm-fs-16 adm-fw-700 text-blue-grey-10">
-                                                    Temporada {{ element.number }}: {{ element.name }}
-                                                </div>
-                                                <div class="text-blue-grey-10">
-                                                    {{ element.lessons.length ?? 0 }} {{ element.lessons.length > 1 ? 'episódios' : 'episódio' }}
-                                                </div>
-                                            </div>
-
-                                            <div class="col-1 flex items-center justify-end">
-                                                <q-btn icon="more_vert" flat>
-                                                    <q-menu :offset="[45, 0]">
-                                                        <q-list>
-                                                            <q-item
-                                                                clickable
-                                                                @click="edit(element.id)"
-                                                                class="text-blue-grey-10 flex items-center"
-                                                            >
-                                                                <q-icon name="edit" size="xs" color="indigo" />
-
-                                                                <q-item-section no-wrap>
-                                                                    <div class="q-ml-sm"> Editar </div>
-                                                                </q-item-section>
-                                                            </q-item>
-
-                                                            <q-separator/>
-
-                                                            <q-item
-                                                                clickable
-                                                                @click="destroy(element.id)"
-                                                                class="text-blue-grey-10 flex items-center"
-                                                            >
-                                                                <q-icon name="close" size="xs" color="red"/>
-
-                                                                <q-item-section no-wrap>
-                                                                    <div class="q-ml-sm"> Excluir </div>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                        </q-list>
-                                                    </q-menu>
-                                                </q-btn>
-                                            </div>
+                                    <div
+                                        class="col-9 column justify-center q-pl-md"
+                                    >
+                                        <div class="adm-fs-16 adm-fw-700 text-blue-grey-10">
+                                            Temporada {{ element.number }}: {{ element.name }}
                                         </div>
-                                    </template>
+                                        <div class="text-blue-grey-10">
+                                            {{ element.lessons.length ?? 0 }} {{ element.lessons.length > 1 ? 'episódios' : 'episódio' }}
+                                        </div>
+                                    </div>
 
-                                    <template v-slot:default>
-                                        <div>
-                                            <div v-if="element.lessons.length == 0" class="adm-br-16 flex flex-center text-blue-grey-10">
-                                                Nenhuma aula adicionada
-                                            </div>
+                                    <div class="col-1 flex flex-center">
+                                        <q-btn icon="more_vert" flat v-if="!canDrag">
+                                            <q-menu :offset="[95, 0]">
+                                                <q-list>
+                                                    <q-item
+                                                        clickable
+                                                        @click="edit(element.id)"
+                                                        class="text-blue-grey-10 flex items-center"
+                                                    >
+                                                        <q-icon name="edit" size="xs" color="indigo" />
 
-                                            <q-markup-table v-else class="text-blue-grey-10" flat>
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">
-                                                            <div class="adm-fs-16">
-                                                                Número
-                                                            </div>
-                                                        </th>
-                                                        <th class="text-left">
-                                                            <div class="adm-fs-16">
-                                                                Capa
-                                                            </div>
-                                                        </th>
-                                                        <th class="text-left">
-                                                            <div class="adm-fs-16">
-                                                                Nome do episódio
-                                                            </div>
-                                                        </th>
-                                                        <th class="text-left">
-                                                            <div class="adm-fs-16">
-                                                                Duração
-                                                            </div>
-                                                        </th>
-                                                        <th class="text-left">
-                                                            <div class="adm-fs-16">
-                                                                Ação
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="lesson in element.lessons">
-                                                        <td class="text-left">{{ lesson.number }}</td>
-                                                        <td class="text-left" style="padding: 0">
-                                                            <q-img
-                                                                :src="lesson.wallpaper"
-                                                                style="height: 80px; width: 150;"
+                                                        <q-item-section no-wrap>
+                                                            <div class="q-ml-sm"> Editar módulo </div>
+                                                        </q-item-section>
+                                                    </q-item>
+
+                                                    <q-separator/>
+
+                                                    <q-item
+                                                        clickable
+                                                        @click="destroy(element.id)"
+                                                        class="text-blue-grey-10 flex items-center"
+                                                    >
+                                                        <q-icon name="close" size="xs" color="red"/>
+
+                                                        <q-item-section no-wrap>
+                                                            <div class="q-ml-sm"> Excluir módulo </div>
+                                                        </q-item-section>
+                                                    </q-item>
+                                                </q-list>
+                                            </q-menu>
+                                        </q-btn>
+
+                                        <q-icon
+                                            name="swipe_vertical"
+                                            color="indigo"
+                                            size="md"
+                                            v-else
+                                        />
+                                    </div>
+                                </div>
+
+                                <q-slide-transition>
+                                    <div v-show="!canDrag">
+                                        <div v-if="element.lessons.length == 0" class="adm-br-16 flex flex-center text-blue-grey-10">
+                                            Nenhuma aula adicionada
+                                        </div>
+
+                                        <q-markup-table v-else class="text-blue-grey-10" flat>
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="5" class="text-left">
+                                                        <div class="text-blue-grey-10 adm-fs-16 adm-fw-700 flex items-center">
+                                                            <q-icon
+                                                                name="class"
+                                                                color="indigo"
+                                                                size="xs"
                                                             />
-                                                        </td>
-                                                        <td class="text-left">{{ lesson.name }}</td>
-                                                        <td class="text-left">{{ lesson.duration }}</td>
-                                                        <td>
-                                                            <q-btn icon="more_vert" flat>
-                                                                <q-menu :offset="[45, 0]">
-                                                                    <q-list>
-                                                                        <q-item
-                                                                            clickable
-                                                                            class="text-blue-grey-10 flex items-center"
-                                                                        >
-                                                                            <q-icon name="edit" size="xs" color="indigo" />
 
-                                                                            <q-item-section no-wrap>
-                                                                                <div class="q-ml-sm"> Editar </div>
-                                                                            </q-item-section>
-                                                                        </q-item>
+                                                            <div class="q-ml-sm">
+                                                                Aulas
+                                                            </div>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                                                        <q-separator/>
+                                            <tbody>
+                                                <tr v-for="lesson in element.lessons">
+                                                    <td class="text-left" style="width: 5%;">{{ lesson.number }}</td>
+                                                    <td class="text-left" style="width: 10%; padding: 0">
+                                                        <q-img
+                                                            :src="lesson.wallpaper"
+                                                            style="height: 50px;"
+                                                        />
+                                                    </td>
+                                                    <td class="text-left" style="width: 85%;">{{ lesson.name }}</td>
+                                                    <td>
+                                                        <q-btn icon="more_vert" flat>
+                                                            <q-menu :offset="[75, 0]">
+                                                                <q-list>
+                                                                    <q-item
+                                                                        clickable
+                                                                        class="text-blue-grey-10 flex items-center"
+                                                                    >
+                                                                        <q-icon name="edit" size="xs" color="indigo" />
 
-                                                                        <q-item
-                                                                            clickable
-                                                                            class="text-blue-grey-10 flex items-center"
-                                                                        >
-                                                                            <q-icon name="close" size="xs" color="red"/>
+                                                                        <q-item-section no-wrap>
+                                                                            <div class="q-ml-sm"> Editar aula </div>
+                                                                        </q-item-section>
+                                                                    </q-item>
 
-                                                                            <q-item-section no-wrap>
-                                                                                <div class="q-ml-sm"> Excluir </div>
-                                                                            </q-item-section>
-                                                                        </q-item>
-                                                                    </q-list>
-                                                                </q-menu>
-                                                            </q-btn>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </q-markup-table>
-                                        </div>
-                                    </template>
-                                </q-expansion-item>
+                                                                    <q-separator/>
+
+                                                                    <q-item
+                                                                        clickable
+                                                                        class="text-blue-grey-10 flex items-center"
+                                                                    >
+                                                                        <q-icon name="close" size="xs" color="red"/>
+
+                                                                        <q-item-section no-wrap>
+                                                                            <div class="q-ml-sm"> Excluir aula </div>
+                                                                        </q-item-section>
+                                                                    </q-item>
+                                                                </q-list>
+                                                            </q-menu>
+                                                        </q-btn>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </q-markup-table>
+                                    </div>
+                                </q-slide-transition>
                             </q-card-section>
                         </q-card>
                     </template>
