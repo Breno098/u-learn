@@ -14,7 +14,8 @@ class ModuleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name,
+            'name' => fake()->name(),
+            'description' => fake()->realText(),
             'image' => \App\Helpers\Seeder\Random::image(),
         ];
     }

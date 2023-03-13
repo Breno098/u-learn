@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\Content\Season;
+namespace App\Http\Requests\Admin\Module;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ContentSeasonStoreRequest extends FormRequest
+class ModuleUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class ContentSeasonStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'number' => 'required|integer',
             'image' => 'nullable',
-            'number_of_chapters' => 'required|integer',
+            'description' => 'nullable|string',
         ];
     }
 
@@ -38,7 +37,6 @@ class ContentSeasonStoreRequest extends FormRequest
     {
         return [
             'name.required' => 'Preencha o nome',
-            'number.required' => 'Preencha o numero da temporada',
         ];
     }
 }

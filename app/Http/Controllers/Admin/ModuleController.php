@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Content;
-use App\Http\Requests\Admin\Content\Season\ContentSeasonStoreRequest;
-use App\Http\Requests\Admin\Content\Season\ContentSeasonUpdateRequest;
-use App\Http\Resources\Admin\Content\ContentResource;
+use App\Http\Requests\Admin\Module\ModuleStoreRequest;
+use App\Http\Requests\Admin\Module\ModuleUpdateRequest;
 use App\Http\Resources\Admin\CourseResource;
 use App\Http\Resources\Admin\ModuleResource;
-use App\Http\Resources\Admin\SeasonResource;
 use App\Models\Course;
 use App\Models\Module;
-use App\Models\Season;
 use App\Services\Admin\ModuleService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
@@ -61,46 +57,46 @@ class ModuleController extends Controller
      */
     public function edit(Course $course, Module $module): Response
     {
-        return inertia('Admin/Content/Title/Season/Edit', [
+        return inertia('Admin/Course/Module/Edit', [
             'course' => new CourseResource($course),
             'module' => new ModuleResource($module),
         ]);
     }
 
     /**
-     * @param ContentSeasonStoreRequest $contentSeasonStoreRequest
+     * @param ModuleStoreRequest $moduleStoreRequest
      * @param Course $course
      * @return RedirectResponse
      */
-    public function store(ContentSeasonStoreRequest $contentSeasonStoreRequest, Course $course): RedirectResponse
+    public function store(ModuleStoreRequest $moduleStoreRequest, Course $course): RedirectResponse
     {
-        $this->seasonService->store($content, $contentSeasonStoreRequest->validated());
+        $this->moduleService->store($course, $moduleStoreRequest->validated());
 
-        return redirect()->route('admin.content.season.index', $course);
+        return redirect()->route('admin.course.module.index', $course);
     }
 
     /**
-     * @param ContentSeasonUpdateRequest $contentSeasonUpdateRequest
-     * @param Content $content
-     * @param Season $season
+     * @param ModuleUpdateRequest $moduleUpdateRequest
+     * @param Course $course
+     * @param Module $module
      * @return RedirectResponse
      */
-    public function update(ContentSeasonUpdateRequest $contentSeasonUpdateRequest, Content $content, Season $season): RedirectResponse
+    public function update(ModuleUpdateRequest $moduleUpdateRequest, Course $course, Module $module): RedirectResponse
     {
-        $this->seasonService->update($content, $season, $contentSeasonUpdateRequest->validated());
+        $this->moduleService->update($course, $module, $moduleUpdateRequest->validated());
 
-        return redirect()->route('admin.content.season.index', $content);
+        return redirect()->route('admin.course.module.index', $course);
     }
 
     /**
-     * @param Content $content
-     * @param Season $season
+     * @param Course $course
+     * @param Module $module
      * @return RedirectResponse
      */
-    public function destroy(Content $content, Season $season): RedirectResponse
+    public function destroy(Course $course, Module $module): RedirectResponse
     {
-        $this->seasonService->delete($content, $season);
+        $this->moduleService->delete($course, $module);
 
-        return redirect()->route('admin.content.season.index', $content);
+        return redirect()->route('admin.course.module.index', $course);
     }
 }

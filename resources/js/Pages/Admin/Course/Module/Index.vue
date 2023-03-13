@@ -12,34 +12,38 @@
         course: Object,
         errors: Object,
         query: Object,
-
-        canCourseStore: Boolean,
-        canCourseEdit: Boolean,
-        canCourseDestroy: Boolean,
     });
 
-    const create = () => useForm().get(route('admin.course.create'));
+    const create = () =>  useForm().get(route('admin.course.module.create', {
+        course: props.course.id
+    }));
 
-    const edit = (id) => useForm().get(route('admin.course.edit', id));
+    const edit = (id) =>  useForm().get(route('admin.course.module.edit', {
+        course: props.course.id,
+        module: id
+    }));
 
     const destroy = (id) => {
         $q.dialog({
             component: AdminDialog,
             componentProps: {
-                title: 'Excluir curso',
-                message: 'Tem certeza que deseja excluir essa curso?',
+                title: 'Excluir módulo',
+                message: 'Ao excluir módulo, as aulas pertencentes a ele também serão excluídas. Tem certeza disso?',
                 confirm: true,
                 icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
-            useForm().delete(route('admin.course.destroy', id), {
+            useForm().delete(route('admin.course.module.destroy', {
+                course: props.course.id,
+                module: id
+            }), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
                     $q.dialog({
                         component: AdminDialog,
                         componentProps: {
-                            message: 'Curso excluído com sucesso',
+                            message: 'Módulo excluído com sucesso',
                             icon: { name: 'check', color: 'green' },
                             timeout: 3000
                         }
@@ -148,25 +152,32 @@
 
                                     <div class="col-1 flex items-center justify-end">
                                         <q-btn icon="more_vert" flat>
-                                            <q-menu>
+                                            <q-menu :offset="[45, 0]">
                                                 <q-list>
                                                     <q-item
                                                         clickable
-                                                        class="text-grey-7 flex flex-center"
+                                                        @click="edit(_module.id)"
+                                                        class="text-grey-7 flex items-center"
                                                     >
-                                                        <q-icon name="edit" size="xs"/>
-                                                        <div class="q-ml-sm"> Editar </div>
+                                                        <q-icon name="edit" size="xs" color="indigo" />
+
+                                                        <q-item-section no-wrap>
+                                                            <div class="q-ml-sm"> Editar </div>
+                                                        </q-item-section>
                                                     </q-item>
 
                                                     <q-separator/>
 
-
                                                     <q-item
                                                         clickable
+                                                        @click="destroy(_module.id)"
                                                         class="text-grey-7 flex flex-center"
                                                     >
-                                                        <q-icon name="close" size="xs"/>
-                                                        <div class="q-ml-sm"> Excluir </div>
+                                                        <q-icon name="close" size="xs" color="red"/>
+
+                                                        <q-item-section no-wrap>
+                                                            <div class="q-ml-sm"> Excluir </div>
+                                                        </q-item-section>
                                                     </q-item>
                                                 </q-list>
                                             </q-menu>

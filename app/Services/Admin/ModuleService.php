@@ -2,9 +2,9 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Chapter;
-use App\Models\Content;
-use App\Models\Season;
+use App\Models\Course;
+use App\Models\Lesson;
+use App\Models\Module;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -13,54 +13,52 @@ use Illuminate\Support\Facades\Storage;
 class ModuleService
 {
     /**
-     * @param Content $content
+     * @param Course $course
      * @param array $requestData
-     * @return Season
+     * @return Module
      */
-    public function store(Content $content, array $requestData = []): Season
+    public function store(Course $course, array $requestData = []): Module
     {
-        $season = $content->seasons()->create($this->transform($requestData));
+        $module = $course->modules()->create($this->transform($requestData, $course));
 
-        $this->uploadImage($season, Arr::get($requestData, 'image'));
+        $this->uploadImage($module, Arr::get($requestData, 'image'));
 
-        return $season;
+        return $module;
     }
 
      /**
-     * @param Content $content
-     * @param Season $season
+     * @param Course $course
+     * @param Module $module
      * @param array $requestData
-     * @return Extra
+     * @return Module
      */
-    public function update(Content $content, Season $season, array $requestData = []): Season
+    public function update(Course $course, Module $module, array $requestData = []): Module
     {
-        $content->seasons()->find($season->id)->update($this->transform($requestData));
+        $course->modules()->find($module->id)->update($this->transform($requestData));
 
-        $this->uploadImage($season, Arr::get($requestData, 'image'));
+        $this->uploadImage($module, Arr::get($requestData, 'image'));
 
-        return $season;
+        return $module;
     }
 
     /**
-     * @param Content $content
-     * @param Season $season
+     * @param Course $course
+     * @param Module $module
      * @return bool|null
      */
-    public function delete(Content $content, Season $season): bool|null
+    public function delete(Course $course, Module $module): bool|null
     {
-        $season = $content->seasons()->find($season->id);
+        $module = $course->modules()->find($module->id);
 
-        if ($season) {
-            /** @var ChapterService $chapterService */
-            $chapterService= app(ChapterService::class);
+        if ($module) {
+            /** @var LessonService $lessonService */
+            $lessonService= app(LessonService::class);
 
-            $season->chapters->map(function(Chapter $chapter) use ($season, $chapterService) {
-                $chapterService->deleteForSeason($season, $chapter);
-            });
+            $module->lessons->map(fn(Lesson $lesson) => $lessonService->delete($lesson));
 
-            $this->deleteImage($season);
+            $this->deleteImage($module);
 
-            return $season->delete();
+            return $module->delete();
         }
 
         return false;
@@ -68,55 +66,56 @@ class ModuleService
 
     /**
      * @param array $requestData
+     * @param null|Course $course
      * @return array
      */
-    private function transform(array $requestData): array
+    private function transform(array $requestData, null|Course $course = null): array
     {
         return [
             'name' => Arr::get($requestData, 'name'),
-            'number' => Arr::get($requestData, 'number'),
-            'number_of_chapters' => Arr::get($requestData, 'number_of_chapters'),
+            'description' => Arr::get($requestData, 'description'),
+            'number' => Arr::get($requestData, 'number', $course && $course->modules->isNotEmpty() ? $course->modules->last()->number + 1 : 1)
         ];
     }
 
     /**
-     * @param Season $season
+     * @param Module $module
      * @return void
      */
-    public function deleteImage(Season $season): void
+    public function deleteImage(Module $module): void
     {
-        if ($season->image) {
-            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $season->image));
+        if ($module->image) {
+            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $module->image));
 
-            $season->update(['image' => null]);
+            $module->update(['image' => null]);
         }
     }
 
     /**
-     * @param Season $season
+     * @param Module $module
      * @param UploadedFile $image
      * @return void
      */
-    public function updateImage(Season $season, UploadedFile $image): void
+    public function updateImage(Module $module, UploadedFile $image): void
     {
-        $this->deleteImage($season);
+        $this->deleteImage($module);
 
-        $season->update([
-            'image' => Storage::url(Storage::disk('public')->put('seasons', $image))
+        $module->update([
+            'image' => Storage::url(Storage::disk('public')->put('modules', $image))
         ]);
     }
 
     /**
-     * @param Season $season
+     * @param Module $module
      * @param null|string|UploadedFile $image
      * @return void
      */
-    public function uploadImage(Season $season, null|string|UploadedFile $image): void
+    public function uploadImage(Module $module, null|string|UploadedFile $image): void
     {
         if (! $image) {
-            $this->deleteImage($season);
+            $this->deleteImage($module);
         } else if ($image instanceof UploadedFile) {
-            $this->updateImage($season, $image);
+            $this->updateImage($module, $image);
         }
     }
 }

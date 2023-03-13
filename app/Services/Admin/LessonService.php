@@ -4,13 +4,14 @@ namespace App\Services\Admin;
 
 use App\Models\Chapter;
 use App\Models\Content;
+use App\Models\Lesson;
 use App\Models\Season;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-class ChapterService
+class LessonService
 {
     /**
      * @param array $requestData
@@ -47,15 +48,15 @@ class ChapterService
     }
 
     /**
-     * @param Chapter $chapter
+     * @param Lesson $lesson
      * @return void
      */
-    public function deleteImage(Chapter $chapter): void
+    public function deleteImage(Lesson $lesson): void
     {
-        if ($chapter->image) {
-            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $chapter->image));
+        if ($lesson->image) {
+            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $lesson->image));
 
-            $chapter->update(['image' => null]);
+            $lesson->update(['image' => null]);
         }
     }
 
@@ -152,20 +153,13 @@ class ChapterService
     }
 
     /**
-     * @param Season $season
-     * @param Chapter $chapter
+     * @param Lesson $lesson
      * @return boolean|null
      */
-    public function deleteForSeason(Season $season, Chapter $chapter): ?bool
+    public function delete(Lesson $lesson): ?bool
     {
-        /** @var Chapter|null */
-        $chapter = $season->chapters()->find($chapter->id);
+        $this->deleteImage($lesson);
 
-        if ($chapter) {
-            $this->deleteImage($chapter);
-            return $chapter->delete();
-        }
-
-        return false;
+        return $lesson->delete();
     }
 }

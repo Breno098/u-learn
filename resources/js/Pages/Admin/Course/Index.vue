@@ -74,8 +74,6 @@
 
     const edit = (id) => useForm().get(route('admin.course.edit', id));
 
-    const show = (id) => useForm().get(route('admin.course.show', id));
-
     const destroy = (id) => {
         $q.dialog({
             component: AdminDialog,

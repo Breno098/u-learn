@@ -23,6 +23,7 @@ class ModuleResource extends JsonResource
             'name' => $module->name,
             'number' => $module->number,
             'image' => $module->image,
+            'description' => $module->description,
             'lessons' => LessonResource::collection($module->lessons),
         ];
     }

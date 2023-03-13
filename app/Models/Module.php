@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $name
  * @property string $number
  * @property string $image
+ * @property string $description
  * @property Course $course
  * @property Lesson[] $lessons
  */
@@ -29,7 +30,8 @@ class Module extends Model
     protected $fillable = [
         'name',
         'image',
-        'number'
+        'number',
+        'description'
     ];
 
     /**

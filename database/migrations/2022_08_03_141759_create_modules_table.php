@@ -19,6 +19,7 @@ class CreateModulesTable extends Migration
             $table->foreignId('course_id')->constrained();
             $table->integer('number')->default(1);
             $table->string('image')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
