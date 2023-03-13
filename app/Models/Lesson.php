@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $duration
  * @property string $wallpaper
  * @property string $video
- * @property string $release_type
  * @property boolean $can_comments
  * @property Module $module
  * @property Course $course
@@ -37,7 +36,6 @@ class Lesson extends Model
         'duration',
         'video',
         'wallpaper',
-        'release_type',
         'can_comments',
     ];
 
@@ -47,7 +45,8 @@ class Lesson extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'duration' => 'datetime:H:i'
+        'duration' => 'datetime:H:i',
+        'can_comments' => 'boolean'
     ];
 
     /**

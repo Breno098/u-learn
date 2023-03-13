@@ -26,7 +26,6 @@ class LessonResource extends JsonResource
             'duration' => $lesson->duration ? $lesson->duration->format('H:s') : null,
             'wallpaper' => $lesson->wallpaper,
             'video' => $lesson->video,
-            'release_type' => $lesson->release_type,
             'can_comments' => $lesson->can_comments,
         ];
     }

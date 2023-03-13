@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Lesson\LessonStoreRequest;
 use App\Http\Requests\Admin\Lesson\LessonUpdateRequest;
 use App\Http\Resources\Admin\CourseResource;
 use App\Http\Resources\Admin\LessonResource;
@@ -58,16 +59,16 @@ class LessonController extends Controller
     }
 
     /**
-     * @param LessonUpdateRequest $lessonUpdateRequest
+     * @param LessonStoreRequest $lessonStoreRequest
      * @param Course $course
      * @param Module $module
      * @return RedirectResponse
      */
-    public function store(LessonUpdateRequest $lessonUpdateRequest, Course $course, Module $module): RedirectResponse
+    public function store(LessonStoreRequest $lessonStoreRequest, Course $course, Module $module): RedirectResponse
     {
-        $this->lessonService->store($module, $lessonUpdateRequest->validated());
+        $this->lessonService->store($module, $lessonStoreRequest->validated());
 
-        return redirect()->route('admin.content.chapter.index', $course);
+        return redirect()->route('admin.course.module.index', $course);
     }
 
     /**

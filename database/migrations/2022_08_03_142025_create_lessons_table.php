@@ -21,7 +21,6 @@ class CreateLessonsTable extends Migration
             $table->time('duration')->nullable();
             $table->string('wallpaper')->nullable();
             $table->string('video')->nullable();
-            $table->enum('release_type', ['livre', 'data', 'data_apos_criacao_curso', 'conclusao_aula_anterior'])->default('livre');
             $table->boolean('can_comments')->default(true);
             $table->foreignId('module_id')->constrained();
             $table->timestamps();

@@ -16,14 +16,14 @@
     });
 
     const form = useForm({
-        id: props.lesson.id,
-        name: props.lesson.name,
-        description: props.lesson.description,
-        number: props.lesson.number,
-        duration: props.lesson.duration,
-        video: props.lesson.video,
-        wallpaper: props.lesson.wallpaper,
-        can_comments: props.lesson.can_comments,
+        id: null,
+        name: null,
+        description: null,
+        number: null,
+        duration: null,
+        video: null,
+        wallpaper: null,
+        can_comments: true,
     });
 
     const dropZoneWallpaper = useDropzone({
@@ -45,24 +45,21 @@
     const removeImage = () => form.wallpaper = null;
 
     const submit = () => {
-        form
-            .transform((data) => ({...data, _method: 'put' }))
-            .post(route("admin.course.module.lesson.update", {
-                course: props.course.id,
-                module: props.module.id,
-                lesson: props.lesson.id
-            }), {
-                onSuccess: () => {
-                    $q.dialog({
-                        component: AdminDialog,
-                        componentProps: {
-                            message: `Aula ${form.name} atualizada com sucesso`,
-                            icon: { name: 'check', color: 'green' },
-                            timeout: 3000
-                        }
-                    })
-                },
-            })
+        form.post(route("admin.course.module.lesson.store", {
+            course: props.course.id,
+            module: props.module.id,
+        }), {
+            onSuccess: () => {
+                $q.dialog({
+                    component: AdminDialog,
+                    componentProps: {
+                        message: `Aula ${form.name} cadastrada com sucesso`,
+                        icon: { name: 'check', color: 'green' },
+                        timeout: 3000
+                    }
+                })
+            },
+        })
     };
 
     const goBack = () => useForm().get(route('admin.course.module.index', {
@@ -72,7 +69,7 @@
 
 <template>
     <AuthenticatedLayout>
-        <Head :title="`Editar aula ${lesson.name} do módulo ${module.name}`" />
+        <Head :title="`Nova aula para o módulo ${module.name}`" />
 
         <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
@@ -80,7 +77,7 @@
                     <q-icon name="o_view_agenda" color="indigo" size="md"/>
 
                     <div class="adm-fs-28 text-blue-grey-10 q-ml-md">
-                        Editar aula <b>{{ lesson.name }}</b> do módulo <b>{{ module.name }}</b>
+                        Nova aula para o módulo <b>{{ module.name }}</b>
                     </div>
                 </div>
 

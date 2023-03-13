@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int|null $id
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property string $image
  * @property string $description
  * @property Course $course
- * @property Lesson[] $lessons
+ * @property Lesson[]|Collection $lessons
  */
 class Module extends Model
 {

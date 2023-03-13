@@ -92,8 +92,9 @@
         modulesDrag.value = props.modules
     }
 
-    const createLesson = () =>  useForm().get(route('admin.course.module.create', {
-        course: props.course.id
+    const createLesson = (module) =>  useForm().get(route('admin.course.module.lesson.create', {
+        course: props.course.id,
+        module: module.id,
     }));
 
     const editLesson = (lesson, module) =>  useForm().get(route('admin.course.module.lesson.edit', {
@@ -134,6 +135,8 @@
             })
         });
     }
+
+    const canDragLessons = ref(false)
 </script>
 
 <template>
@@ -225,9 +228,8 @@
                     v-model="modulesDrag"
                     item-key="number"
                     :disabled="!canDrag"
-                    :class="{
-                        'q-mt-xl': canDrag
-                    }"
+                    :class="{'q-mt-xl': canDrag}"
+                    @start="drag = true"
                 >
                     <template #item="{element: moduleData, index}">
                         <q-card
@@ -311,6 +313,19 @@
                                                             <div class="q-ml-sm">
                                                                 {{ moduleData.lessons.length }} {{ moduleData.lessons.length > 1 ? 'aulas' : 'aula' }}
                                                             </div>
+
+                                                            <q-space/>
+
+                                                            <q-btn
+                                                                dense
+                                                                color="indigo-10"
+                                                                class="inset-shadow-down"
+                                                                icon="swipe_vertical"
+                                                                label="Reordenar aulas"
+                                                                no-caps
+                                                                size="sm"
+                                                                icon-right="class"
+                                                            />
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -321,7 +336,6 @@
                                                 <draggable
                                                     v-model="moduleData.lessons"
                                                     item-key="number"
-                                                    :disabled="true"
                                                 >
                                                     <template #item="{element: lesson, index}">
                                                         <tr>
@@ -334,7 +348,14 @@
                                                             </td>
                                                             <td class="text-left" style="width: 85%;">{{ lesson.name }}</td>
                                                             <td>
-                                                                <q-btn icon="more_vert" flat>
+                                                                <q-icon
+                                                                    name="swipe_vertical"
+                                                                    color="indigo"
+                                                                    size="sm"
+                                                                    v-if="canDragLessons"
+                                                                />
+
+                                                                <q-btn icon="more_vert" flat v-else>
                                                                     <q-menu :offset="[75, 0]">
                                                                         <q-list>
                                                                             <q-item
@@ -381,6 +402,7 @@
                                                 label="Adicionar aula"
                                                 outline
                                                 class="full-width"
+                                                @click="createLesson(moduleData)"
                                             />
                                         </div>
                                     </div>

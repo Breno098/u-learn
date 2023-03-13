@@ -23,23 +23,22 @@ class LessonService
             'number' => Arr::get($requestData, 'number'),
             'duration' => Arr::get($requestData, 'duration'),
             'video' => Arr::get($requestData, 'video'),
-            'wallpaper' => Arr::get($requestData, 'wallpaper'),
-            'release_type' => Arr::get($requestData, 'release_type'),
             'can_comments' => Arr::get($requestData, 'can_comments'),
+            'number' => Arr::get($requestData, 'number'),
         ];
     }
 
     /**
      * @param Lesson $lesson
-     * @param null|string|UploadedFile $image
+     * @param null|string|UploadedFile $wallpaper
      * @return void
      */
-    public function uploadImage(Lesson $lesson, null|string|UploadedFile $image): void
+    public function uploadWallPaper(Lesson $lesson, null|string|UploadedFile $wallpaper): void
     {
-        if (! $image) {
-            $this->deleteImage($lesson);
-        } else if ($image instanceof UploadedFile) {
-            $this->updateImage($lesson, $image);
+        if (! $wallpaper) {
+            $this->deleteWallpaper($lesson);
+        } else if ($wallpaper instanceof UploadedFile) {
+            $this->updateWallpaper($lesson, $wallpaper);
         }
     }
 
@@ -47,26 +46,26 @@ class LessonService
      * @param Lesson $lesson
      * @return void
      */
-    public function deleteImage(Lesson $lesson): void
+    public function deleteWallpaper(Lesson $lesson): void
     {
-        if ($lesson->image) {
-            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $lesson->image));
+        if ($lesson->wallpaper) {
+            Storage::disk('public')->delete(Str::replaceFirst('storage', '', $lesson->wallpaper));
 
-            $lesson->update(['image' => null]);
+            $lesson->update(['wallpaper' => null]);
         }
     }
 
     /**
      * @param Lesson $lesson
-     * @param UploadedFile $image
+     * @param UploadedFile $wallpaper
      * @return void
      */
-    public function updateImage(Lesson $lesson, UploadedFile $image): void
+    public function updateWallpaper(Lesson $lesson, UploadedFile $wallpaper): void
     {
-        $this->deleteImage($lesson);
+        $this->deleteWallpaper($lesson);
 
         $lesson->update([
-            'image' => Storage::url(Storage::disk('public')->put('chapters', $image))
+            'wallpaper' => Storage::url(Storage::disk('public')->put('lessons', $wallpaper))
         ]);
     }
 
@@ -77,10 +76,14 @@ class LessonService
      */
     public function store(Module $module, array $requestData = []): Lesson
     {
-        /** @var Lesson */
-        $lesson = $module->lessons()->create($this->transformData($requestData));
+        if (! Arr::get($requestData, 'number')) {
+            Arr::set($requestData, 'number', $module && $module->lessons->isNotEmpty() ? $module->lessons->last()->number + 1 : 1);
+        }
 
-        $this->uploadImage($lesson, Arr::get($requestData, 'image'));
+        /** @var Lesson */
+        $lesson = $module->lessons()->create($this->transformData($requestData, $module));
+
+        $this->uploadWallPaper($lesson, Arr::get($requestData, 'wallpaper'));
 
         return $lesson;
     }
@@ -94,7 +97,7 @@ class LessonService
         if ($lesson) {
             $lesson->update($this->transformData($requestData));
 
-            $this->uploadImage($lesson, Arr::get($requestData, 'image'));
+            $this->uploadWallPaper($lesson, Arr::get($requestData, 'wallpaper'));
         }
 
         return $lesson;
@@ -106,7 +109,7 @@ class LessonService
      */
     public function delete(Lesson $lesson): ?bool
     {
-        $this->deleteImage($lesson);
+        $this->deleteWallpaper($lesson);
 
         return $lesson->delete();
     }

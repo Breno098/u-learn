@@ -30,8 +30,7 @@ class LessonUpdateRequest extends FormRequest
             'duration' => 'nullable|date_format:H:i',
             'direction' => 'nullable|string',
             'video' => 'nullable|url',
-            'release_type' => 'nullable|string',
-            'can_comments' => 'nullable|boolean',
+            'can_comments' => 'required|boolean',
             'wallpaper' => 'nullable',
         ];
     }
