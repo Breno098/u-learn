@@ -64,6 +64,11 @@
 
     const modulesDrag = ref(props.modules);
 
+    const activeModulesDrag = () => {
+        canDrag.value = true;
+        canDragLessons.value = false;
+    }
+
     const storeReorder = () => {
         useForm({
             modules: modulesDrag.value
@@ -89,7 +94,33 @@
 
     const restoreModules = () => {
         canDrag.value = false;
-        modulesDrag.value = props.modules
+        canDragLessons.value = false;
+
+        // modulesDrag.value = props.modules;
+
+        modulesDrag.value = [];
+
+        props.modules.forEach((mod, index) => {
+            let lessons = [];
+
+            mod.lessons.forEach((le) => {
+                lessons.push({
+                    name: le.name
+                })
+            })
+
+            modulesDrag.value.push({
+                name: mod.name,
+                number: mod.number,
+                image: mod.image,
+                lessons: lessons
+            });
+        });
+
+        // props.modules.map((mod, index) => {
+        //     console.log(mod.lessons, modulesDrag.value[index])
+        //     modulesDrag.value[index].lessons = mod.lessons;
+        // });
     }
 
     const createLesson = (module) =>  useForm().get(route('admin.course.module.lesson.create', {
@@ -184,8 +215,9 @@
                     style="top: 0; right: 12px; transform: translateY(-50%);"
                     label="Reordenar módulos"
                     no-caps
-                    @click="canDrag = true"
-                    v-if="!canDrag"
+                    @click="activeModulesDrag"
+                    icon-right="o_view_agenda"
+                    v-if="!canDrag && !canDragLessons"
                 />
 
                 <q-btn
@@ -194,7 +226,7 @@
                     class="absolute inset-shadow-down"
                     icon="check"
                     style="top: 0; right: 12px; transform: translateY(-50%);"
-                    label="Salvar ordenação"
+                    label="Salvar ordenação de módulos"
                     no-caps
                     @click="storeReorder"
                     v-if="canDrag"
@@ -209,7 +241,23 @@
                     label="Cancelar"
                     no-caps
                     @click="restoreModules"
-                    v-if="canDrag"
+                    v-if="canDrag || canDragLessons"
+                />
+
+                <q-btn
+                    dense
+                    color="indigo-10"
+                    class="absolute inset-shadow-down"
+                    icon="swipe_vertical"
+                    style="top: 0; right: 12px;"
+                    :style="{
+                        'transform': !canDrag && canDragLessons ? 'translateY(-50%)' : 'translateY(80%)'
+                    }"
+                    label="Reordenar aulas"
+                    no-caps
+                    icon-right="class"
+                    @click="canDragLessons = true"
+                    v-if="!canDrag"
                 />
 
                 <div v-if="canDrag" class="text-indigo row flex-center">
@@ -229,6 +277,7 @@
                     item-key="number"
                     :disabled="!canDrag"
                     :class="{'q-mt-xl': canDrag}"
+                    class="q-mt-xl"
                     @start="drag = true"
                 >
                     <template #item="{element: moduleData, index}">
@@ -313,19 +362,6 @@
                                                             <div class="q-ml-sm">
                                                                 {{ moduleData.lessons.length }} {{ moduleData.lessons.length > 1 ? 'aulas' : 'aula' }}
                                                             </div>
-
-                                                            <q-space/>
-
-                                                            <q-btn
-                                                                dense
-                                                                color="indigo-10"
-                                                                class="inset-shadow-down"
-                                                                icon="swipe_vertical"
-                                                                label="Reordenar aulas"
-                                                                no-caps
-                                                                size="sm"
-                                                                icon-right="class"
-                                                            />
                                                         </div>
                                                     </th>
                                                 </tr>
@@ -334,12 +370,14 @@
                                             <!-- @todo Fazer ordenação de aulas -->
                                             <tbody>
                                                 <draggable
-                                                    v-model="moduleData.lessons"
+                                                    :list="moduleData.lessons"
                                                     item-key="number"
+                                                    group="people"
+                                                    :disabled="!canDragLessons"
                                                 >
                                                     <template #item="{element: lesson, index}">
                                                         <tr>
-                                                            <td class="text-left" style="width: 5%;">{{ lesson.number }}</td>
+                                                            <td class="text-left" style="width: 5%;">{{ index + 1 }}</td>
                                                             <td class="text-left" style="width: 10%; padding: 0">
                                                                 <q-img
                                                                     :src="lesson.wallpaper"
