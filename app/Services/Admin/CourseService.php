@@ -108,9 +108,12 @@ class CourseService
     public function delete(Course $course): ?bool
     {
         $course->genres()->detach();
+        $course->modules()->delete();
 
         $this->deleteImage($course, 'wallpaper_image');
         $this->deleteImage($course, 'tumb_image');
+
+
 
         return $course->delete();
     }

@@ -559,7 +559,7 @@
                                                 v-if="canOrderSituationUpdate"
                                                 clickable
                                                 @click="edit(props.row.id)"
-                                                class="text-grey-7 flex items-center"
+                                                class="text-blue-grey-10 flex items-center"
                                             >
                                                 <q-icon name="edit" size="xs"/>
 
@@ -573,7 +573,7 @@
                                             <q-item
                                                 clickable
                                                 @click="show(props.row.id)"
-                                                class="text-grey-7 flex items-center"
+                                                class="text-blue-grey-10 flex items-center"
                                             >
                                                 <q-icon name="visibility" size="xs"/>
 
@@ -588,7 +588,7 @@
                                                 v-if="canOrderCancel"
                                                 clickable
                                                 @click="cancelRecurrence(props.row.id)"
-                                                class="text-grey-7 flex flex-center"
+                                                class="text-blue-grey-10 flex flex-center"
                                             >
                                                 <q-icon name="close" size="xs"/>
 
@@ -603,7 +603,7 @@
                                 <q-btn
                                     v-else
                                     @click="show(props.row.id)"
-                                    class="text-grey-7 flex flex-center text-no-wrap"
+                                    class="text-blue-grey-10 flex flex-center text-no-wrap"
                                     flat
                                     no-caps
                                 >

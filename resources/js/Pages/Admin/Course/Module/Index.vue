@@ -144,7 +144,7 @@
 
                 <q-btn
                     dense
-                    color="indigo-10"
+                    color="indigo"
                     class="absolute inset-shadow-down"
                     icon="check"
                     style="top: 0; right: 12px; transform: translateY(-50%);"
@@ -189,24 +189,18 @@
                                             </div>
 
                                             <div class="col-2 ">
-                                                <q-img
-                                                    :src="element.image"
-                                                    style="min-height: 152px;"
-                                                />
+                                                <q-img :src="element.image" style="min-height: 152px;"/>
                                             </div>
 
                                             <div
                                                 class="column justify-center q-pl-md"
-                                                :class="{
-                                                    'col-9': !canDrag,
-                                                    'col-8': canDrag
-                                                }"
+                                                :class="{'col-9': !canDrag, 'col-8': canDrag}"
                                             >
                                                 <div class="adm-fs-16 adm-fw-700 text-blue-grey-10">
                                                     Temporada {{ element.number }}: {{ element.name }}
                                                 </div>
                                                 <div class="text-blue-grey-10">
-                                                    {{ element.lessons.length ?? 0 }} episódios
+                                                    {{ element.lessons.length ?? 0 }} {{ element.lessons.length > 1 ? 'episódios' : 'episódio' }}
                                                 </div>
                                             </div>
 
@@ -217,7 +211,7 @@
                                                             <q-item
                                                                 clickable
                                                                 @click="edit(element.id)"
-                                                                class="text-grey-7 flex items-center"
+                                                                class="text-blue-grey-10 flex items-center"
                                                             >
                                                                 <q-icon name="edit" size="xs" color="indigo" />
 
@@ -231,7 +225,7 @@
                                                             <q-item
                                                                 clickable
                                                                 @click="destroy(element.id)"
-                                                                class="text-grey-7 flex flex-center"
+                                                                class="text-blue-grey-10 flex items-center"
                                                             >
                                                                 <q-icon name="close" size="xs" color="red"/>
 
@@ -295,24 +289,30 @@
                                                         <td class="text-left">{{ lesson.duration }}</td>
                                                         <td>
                                                             <q-btn icon="more_vert" flat>
-                                                                <q-menu>
+                                                                <q-menu :offset="[45, 0]">
                                                                     <q-list>
                                                                         <q-item
                                                                             clickable
-                                                                            class="text-grey-7 flex flex-center"
+                                                                            class="text-blue-grey-10 flex items-center"
                                                                         >
-                                                                            <q-icon name="edit" size="xs"/>
-                                                                            <div class="q-ml-sm"> Editar </div>
+                                                                            <q-icon name="edit" size="xs" color="indigo" />
+
+                                                                            <q-item-section no-wrap>
+                                                                                <div class="q-ml-sm"> Editar </div>
+                                                                            </q-item-section>
                                                                         </q-item>
 
                                                                         <q-separator/>
 
                                                                         <q-item
                                                                             clickable
-                                                                            class="text-grey-7 flex flex-center"
+                                                                            class="text-blue-grey-10 flex items-center"
                                                                         >
-                                                                            <q-icon name="close" size="xs"/>
-                                                                            <div class="q-ml-sm"> Excluir </div>
+                                                                            <q-icon name="close" size="xs" color="red"/>
+
+                                                                            <q-item-section no-wrap>
+                                                                                <div class="q-ml-sm"> Excluir </div>
+                                                                            </q-item-section>
                                                                         </q-item>
                                                                     </q-list>
                                                                 </q-menu>

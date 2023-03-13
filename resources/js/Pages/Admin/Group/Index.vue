@@ -335,7 +335,7 @@
                                         <q-item
                                             clickable
                                             @click="edit(props.row.id)"
-                                            class="text-grey-7 flex flex-center"
+                                            class="text-blue-grey-10 flex flex-center"
                                         >
                                             <q-icon name="edit" size="xs"/>
                                             <div class="q-ml-sm"> Editar </div>
@@ -346,7 +346,7 @@
                                         <q-item
                                             clickable
                                             @click="show(props.row.id)"
-                                            class="text-grey-7 flex flex-center"
+                                            class="text-blue-grey-10 flex flex-center"
                                         >
                                             <q-icon name="visibility" size="xs"/>
                                             <div class="q-ml-sm"> Visualizar </div>
@@ -357,7 +357,7 @@
                                         <q-item
                                             clickable
                                             @click="destroy(props.row.id)"
-                                            class="text-grey-7 flex flex-center"
+                                            class="text-blue-grey-10 flex flex-center"
                                         >
                                             <q-icon name="close" size="xs"/>
                                             <div class="q-ml-sm"> Excluir </div>

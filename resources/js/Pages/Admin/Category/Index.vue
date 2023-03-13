@@ -304,7 +304,7 @@
                                                 v-if="canCategoryEdit"
                                                 clickable
                                                 @click="edit(props.row.id)"
-                                                class="text-grey-7 flex items-center"
+                                                class="text-blue-grey-10 flex items-center"
                                             >
                                                 <q-icon name="edit" size="xs" color="indigo" />
 
@@ -319,7 +319,7 @@
                                                 v-if="canCategoryDestroy"
                                                 clickable
                                                 @click="destroy(props.row.id)"
-                                                class="text-grey-7 flex flex-center"
+                                                class="text-blue-grey-10 flex flex-center"
                                             >
                                                 <q-icon name="close" size="xs" color="red"/>
 

@@ -122,6 +122,18 @@
 
         <q-card flat>
             <q-card-section class="q-pb-none q-py-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    icon="chevron_left"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                    label="Voltar"
+                    no-caps
+                    @click="goBack"
+                />
+
+
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 items-center">
                         <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
