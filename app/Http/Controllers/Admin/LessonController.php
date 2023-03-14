@@ -93,7 +93,11 @@ class LessonController extends Controller
      */
     public function destroy(Course $course, Module $module, Lesson $lesson): RedirectResponse
     {
-        $this->lessonService->delete($lesson);
+        $deleted = $this->lessonService->delete($lesson);
+
+        if ($deleted) {
+            $this->lessonService->reorder($module, $module->lessons->toArray());
+        }
 
         return redirect()->route('admin.course.module.index', $course);
     }

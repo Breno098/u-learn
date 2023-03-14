@@ -105,7 +105,6 @@ class ModuleController extends Controller
         return redirect()->route('admin.course.module.index', $course);
     }
 
-
     /**
      * @param Course $course
      * @param Request $request

@@ -341,10 +341,10 @@
                     </template>
                 </q-table>
 
-                <div class="row items-center text-grey">
+                <div class="row items-center text-blue-grey-10">
                     <q-space/>
 
-                    <div class="row items-center text-grey">
+                    <div class="row items-center text-blue-grey-10">
                         Resultado por página
 
                         <q-select

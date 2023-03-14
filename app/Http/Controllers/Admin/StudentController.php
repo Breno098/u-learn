@@ -55,7 +55,6 @@ class StudentController extends Controller
             'canStudentStore' => Authorize::any('student_store'),
             'canStudentEdit' => Authorize::any('student_update'),
             'canStudentDestroy' => Authorize::any('student_destroy'),
-            'canGroupIndex' => Authorize::any('group_index'),
         ]);
     }
 

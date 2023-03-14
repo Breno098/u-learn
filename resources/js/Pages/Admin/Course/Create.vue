@@ -171,7 +171,7 @@
                             map-options
                             outlined
                             v-model="form.level"
-                            label="Categoria"
+                            label="Nível"
                             :bottom-slots="Boolean(errors.level)"
                             clearable
                             color="indigo"

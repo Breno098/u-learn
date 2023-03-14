@@ -26,15 +26,8 @@ class StudentResource extends JsonResource
             'cpf' => $student->cpf,
             'phone' => $student->phone,
             'address'  => $student->address,
-            'customer_cpf'  => $student->customer_cpf,
-            'customer_phone'  => $student->customer_phone,
-            'customer_address'  => $student->customer_address,
-            'equal_data'  => $student->equal_data,
-
-            /** Relations */
             'groups' => GroupResource::collection($student->groups),
             'group_ids' => $student->group_ids,
-
-            ];
+        ];
     }
 }

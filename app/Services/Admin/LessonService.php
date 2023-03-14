@@ -113,4 +113,20 @@ class LessonService
 
         return $lesson->delete();
     }
+
+    /**
+     * @param Module $module
+     * @param array $newPositions
+     * @return void
+     */
+    public function reorder(Module $module, array $newPositions = []): void
+    {
+        foreach ($newPositions as $key => $dataPosition) {
+            if ($id = Arr::get($dataPosition,'id')) {
+                /** @var Lesson */
+                $lesson = $module->lessons()->find($id);
+                $lesson->update(['number' => $key + 1]);
+            }
+        }
+    }
 }

@@ -95,7 +95,7 @@
             v-model="leftDrawerOpen"
             :width="260"
             :breakpoint="500"
-            class="bg-indigo"
+            class="bg-indigo-8"
         >
             <q-scroll-area class="fit">
                 <!-- <q-img

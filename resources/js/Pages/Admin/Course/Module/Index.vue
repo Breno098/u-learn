@@ -95,46 +95,21 @@
     const restoreModules = () => {
         canDrag.value = false;
         canDragLessons.value = false;
-
-        // modulesDrag.value = props.modules;
-
-        modulesDrag.value = [];
-
-        props.modules.forEach((mod, index) => {
-            let lessons = [];
-
-            mod.lessons.forEach((le) => {
-                lessons.push({
-                    name: le.name
-                })
-            })
-
-            modulesDrag.value.push({
-                name: mod.name,
-                number: mod.number,
-                image: mod.image,
-                lessons: lessons
-            });
-        });
-
-        // props.modules.map((mod, index) => {
-        //     console.log(mod.lessons, modulesDrag.value[index])
-        //     modulesDrag.value[index].lessons = mod.lessons;
-        // });
+        modulesDrag.value = props.modules;
     }
 
-    const createLesson = (module) =>  useForm().get(route('admin.course.module.lesson.create', {
+    const createLesson = (_module) =>  useForm().get(route('admin.course.module.lesson.create', {
         course: props.course.id,
-        module: module.id,
+        module: _module.id,
     }));
 
-    const editLesson = (lesson, module) =>  useForm().get(route('admin.course.module.lesson.edit', {
+    const editLesson = (lesson, _module) =>  useForm().get(route('admin.course.module.lesson.edit', {
         course: props.course.id,
-        module: module.id,
+        module: _module.id,
         lesson: lesson.id
     }));
 
-    const destroyLesson = (lesson, module) => {
+    const destroyLesson = (lesson, _module) => {
         $q.dialog({
             component: AdminDialog,
             componentProps: {
@@ -146,7 +121,7 @@
         }).onOk(() => {
             useForm().delete(route('admin.course.module.lesson.destroy', {
                 course: props.course.id,
-                module: module.id,
+                module: _module.id,
                 lesson: lesson.id
             }), {
                 preserveState: true,
@@ -196,6 +171,7 @@
 
         <q-card flat>
             <q-card-section class="q-pb-none q-py-lg">
+                <!-- Voltar -->
                 <q-btn
                     dense
                     color="indigo"
@@ -207,6 +183,7 @@
                     @click="goBackCourse"
                 />
 
+                <!-- Reordenar módulos  -->
                 <q-btn
                     dense
                     color="indigo-10"
@@ -220,6 +197,7 @@
                     v-if="!canDrag && !canDragLessons"
                 />
 
+                <!--Salvar reordenação de módulos  -->
                 <q-btn
                     dense
                     color="indigo"
@@ -232,19 +210,8 @@
                     v-if="canDrag"
                 />
 
-                <q-btn
-                    dense
-                    color="grey-8"
-                    class="absolute inset-shadow-down"
-                    icon="close"
-                    style="top: 0; right: 12px; transform: translateY(80%);"
-                    label="Cancelar"
-                    no-caps
-                    @click="restoreModules"
-                    v-if="canDrag || canDragLessons"
-                />
-
-                <q-btn
+                <!-- Reordenar aulas -->
+                <!-- <q-btn
                     dense
                     color="indigo-10"
                     class="absolute inset-shadow-down"
@@ -257,7 +224,32 @@
                     no-caps
                     icon-right="class"
                     @click="canDragLessons = true"
-                    v-if="!canDrag"
+                    v-if="!canDrag && !canDragLessons"
+                /> -->
+
+                 <!--Salvar reordenação de aulas  -->
+                 <!-- <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    icon="check"
+                    style="top: 0; right: 12px; transform: translateY(-50%);"
+                    label="Salvar ordenação de aulas"
+                    no-caps
+                    v-if="canDragLessons"
+                /> -->
+
+                <!-- Cancelar ordenações -->
+                <q-btn
+                    dense
+                    color="grey-8"
+                    class="absolute inset-shadow-down"
+                    icon="close"
+                    style="top: 0; right: 12px; transform: translateY(80%);"
+                    label="Cancelar"
+                    no-caps
+                    @click="restoreModules"
+                    v-if="canDrag || canDragLessons"
                 />
 
                 <div v-if="canDrag" class="text-indigo row flex-center">
@@ -277,7 +269,6 @@
                     item-key="number"
                     :disabled="!canDrag"
                     :class="{'q-mt-xl': canDrag}"
-                    class="q-mt-xl"
                     @start="drag = true"
                 >
                     <template #item="{element: moduleData, index}">

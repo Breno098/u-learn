@@ -3,7 +3,7 @@
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { useQuasar } from 'quasar'
-    import DialogConfirm from '@/Components/DialogConfirm.vue';
+    import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
 
@@ -15,7 +15,6 @@
         canStudentStore: Boolean,
         canStudentEdit: Boolean,
         canStudentDestroy: Boolean,
-        canGroupIndex: Boolean,
     });
 
     const columns = [{
@@ -98,43 +97,52 @@
 
     const show = (id) => useForm().get(route('admin.student.show', id));
 
-
-    function destroy(id) {
+    const destroy = (id) => {
         $q.dialog({
-            component: DialogConfirm,
+            component: AdminDialog,
             componentProps: {
                 title: 'Excluir aluno',
                 message: 'Tem certeza que deseja excluir esse aluno?',
+                confirm: true,
+                icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
             useForm().delete(route('admin.student.destroy', id), {
                 onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Usuário excluído com sucesso',
-                        position: 'top',
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Usuário excluído com sucesso',
+                            icon: { name: 'check', color: 'green' },
+                            timeout: 3000
+                        }
                     })
                 }
             })
         });
     }
 
-    function destroySelected() {
+    const destroySelected = () => {
         $q.dialog({
-            component: DialogConfirm,
+            component: AdminDialog,
             componentProps: {
                 title: 'Excluir selecionados',
                 message: 'Tem certeza que deseja excluir usuários selecionados?',
+                confirm: true,
+                icon: { name: 'playlist_remove', color: 'red' }
             },
         }).onOk(() => {
             useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.student.destroy-multiples'), {
                 onSuccess: () => {
                     selected.value = [];
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Alunos excluídos com sucesso',
-                        position: 'top',
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Alunos excluídos com sucesso',
+                            icon: { name: 'playlist_add_check', color: 'green' },
+                            timeout: 3000
+                        }
                     })
                 }
             })
@@ -143,256 +151,177 @@
 
     const selected = ref([])
 
-    const countAppliedFilters = computed(() => Object.values(props.query.filters).filter(fil => fil).length);
-
     const showFilters = ref(false)
 
-    const tab = ref('students')
-
-    const toGroups = () => useForm().get(route('admin.group.index'))
-
     const clearFilters = () => useForm().get(route('admin.student.index'))
-
 </script>
 
 <template>
+    <Head title="Alunos" />
+
     <AuthenticatedLayout>
-        <Head title="Alunos" />
+        <q-card flat class="q-mb-lg">
+            <q-card-section class="row items-center q-px-lg">
+                <div class="flex col-12 col-md-6 justify-start items-center">
+                    <q-icon name="o_school" color="indigo" size="md"/>
 
-        <div class="row q-pb-xl">
-            <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Alunos </div>
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md"> Alunos </div>
+                </div>
 
-                <q-breadcrumbs
-                        class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
-                        gutter="xs"
-                >
-                    <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Alunos" class="text-primary" />
-                </q-breadcrumbs>
-            </div>
-
-            <div class="col-12 col-md-6 flex justify-end items-center">
-                <q-btn
-                        v-if="selected.length > 0 && canStudentDestroy"
-                        color="negative"
+                <div class="col-12 col-md-6 flex justify-end items-center">
+                    <q-btn
+                        color="red"
                         class="q-mr-md"
-                        rounded
                         no-caps
                         outline
+                        v-if="selected.length > 0"
                         @click="destroySelected"
-                >
-                    <q-icon name="close" size="xs"/>
+                        icon="playlist_remove"
+                        label="Excluir selecionados"
+                    />
 
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Excluir selecionados
-                    </div>
-                </q-btn>
-
-                <q-btn
-                        v-if="canStudentStore"
-                        color="primary"
-                        rounded
+                    <q-btn
+                        color="indigo"
                         no-caps
                         @click="create"
-                >
-                    <q-icon name="add" size="xs"/>
+                        icon="add"
+                        label="Novo aluno"
+                    />
+                </div>
+            </q-card-section>
+        </q-card>
 
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Novo aluno
+        <q-dialog v-model="showFilters" persistent>
+            <q-card flat style="width: 900px; max-width: 90vw;">
+                <q-card-section class="row items-center q-px-lg">
+                    <q-icon name="filter_list" color="indigo" size="sm"/>
+
+                    <div class="text-h6 q-ml-md text-blue-grey-10">
+                        Filtros
                     </div>
-                </q-btn>
-            </div>
-        </div>
 
-        <q-card flat class="adm-br-16">
-            <q-tabs
-                    v-if="canGroupIndex"
-                    v-model="tab"
-                    dense
-                    class="text-grey"
-                    active-color="primary"
-                    indicator-color="primary"
-                    align="justify"
-                    no-caps
-            >
-                <q-tab
-                        name="students"
-                        label="Alunos"
-                        class="q-py-md"
-                />
+                    <q-space/>
 
-                <q-tab
-                        name="roles"
-                        label="Grupos de alunos"
-                        class="q-py-md"
-                        @click="toGroups"
-                />
-            </q-tabs>
-
-            <q-card-section class="row items-center q-py-sm q-px-lg">
-                <q-chip
-                        class="adm-chip-primary"
-                        v-if="query.filters.name"
-                        :label="`Nome = ${query.filters.name}`"
-                >
-                    <q-icon
-                            name="cancel"
-                            size="xs"
-                            @click="removeFilter('name')"
-                            class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-chip
-                        class="adm-chip-primary"
-                        v-if="query.filters.email"
-                        :label="`E-mail = ${query.filters.email}`"
-                >
-                    <q-icon
-                            name="cancel"
-                            size="xs"
-                            @click="removeFilter('email')"
-                            class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-chip
-                        class="adm-chip-primary"
-                        v-if="query.filters.cpf"
-                        :label="`CPF = ${query.filters.cpf}`"
-                >
-                    <q-icon
-                            name="cancel"
-                            size="xs"
-                            @click="removeFilter('cpf')"
-                            class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-chip
-                        class="adm-chip-primary"
-                        v-if="query.filters.phone"
-                        :label="`Telefone = ${query.filters.phone}`"
-                >
-                    <q-icon
-                            name="cancel"
-                            size="xs"
-                            @click="removeFilter('phone')"
-                            class="q-ml-xs cursor-pointer"
-                    />
-                </q-chip>
-
-                <q-space/>
-
-                <q-btn round dense flat color="primary">
-                    <q-badge
-                            color="primary"
-                            floating
-                            rounded
-                            :label="countAppliedFilters"
-                            v-if="countAppliedFilters"
-                    />
-
-                    <q-icon name="tune" class="rotate-90"/>
-
-                    <q-menu
-                            style="min-width: 500px"
-                            max-width='500px'
-                            class="bg-white q-pa-md adm-br-16"
-                            v-model="showFilters"
-                    >
-                        <div class="row q-col-gutter-sm">
-                            <div class="col-12">
-                                <q-input
-                                        outlined
-                                        v-model="requestData.filters.name"
-                                        label="Nome do aluno"
-                                />
-                            </div>
-
-                            <div class="col-12">
-                                <q-input
-                                        outlined
-                                        v-model="requestData.filters.email"
-                                        label="Email"
-                                />
-                            </div>
-
-                            <div class="col-12">
-                                <q-input
-                                        outlined
-                                        v-model="requestData.filters.cpf"
-                                        label="CPF"
-                                        mask="###.###.###-##"
-                                />
-                            </div>
-
-                            <div class="col-12">
-                                <q-input
-                                        outlined
-                                        v-model="requestData.filters.phone"
-                                        label="Telefone do aluno"
-                                        mask="(##) #########"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="flex flex-center q-pt-lg q-pa-md q-gutter-sm">
-                            <q-btn
-                                    color="primary"
-                                    rounded
-                                    no-caps
-                                    @click="submit"
-                            >
-                                <q-icon name="check" size="xs"/>
-
-                                <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                                    Filtrar
-                                </div>
-                            </q-btn>
-
-                            <q-btn
-                                    color="primary"
-                                    rounded
-                                    outline
-                                    no-caps
-                                    @click="clearFilters"
-                            >
-                                <q-icon name="close" size="xs"/>
-
-                                <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20 m-4">
-                                    Limpar
-                                </div>
-                            </q-btn>
-                        </div>
-                    </q-menu>
-                </q-btn>
-            </q-card-section>
-
-            <q-card-section class="q-py-none">
-                <q-separator color="grey-3"/>
-            </q-card-section>
-
-            <q-card-section class="q-py-none">
-                <q-table
-                        :rows="students.data"
-                        :columns="columns"
+                    <q-btn
+                        icon="close"
                         flat
-                        class="text-grey-8"
-                        v-model:selected="selected"
-                        selection="multiple"
-                        hide-pagination
-                        :pagination.sync="{rowsPerPage: requestData.rowsPerPage}"
+                        dense
+                        v-close-popup
+                        color="indigo"
+                    />
+                </q-card-section>
+
+                <q-card-section class="row items-center q-px-lg q-col-gutter-sm">
+                    <div class="col-12">
+                        <q-input
+                            outlined
+                            v-model="requestData.filters.name"
+                            label="Nome do aluno"
+                            color="indigo"
+                            @keydown.enter.prevent="submit"
+                        />
+                    </div>
+
+                    <div class="col-12">
+                        <q-input
+                            outlined
+                            v-model="requestData.filters.email"
+                            label="E-mail do aluno"
+                            color="indigo"
+                            @keydown.enter.prevent="submit"
+                        />
+                    </div>
+
+                    <div class="col-12 flex items-center justify-end q-pt-lg q-gutter-sm">
+                        <q-btn
+                            color="indigo"
+                            no-caps
+                            @click="submit"
+                            icon="search"
+                            label="Filtrar"
+                        />
+
+                        <q-btn
+                            color="indigo"
+                            no-caps
+                            outline
+                            @click="clearFilters"
+                            icon="clear_all"
+                            label="Limpar"
+                        />
+                    </div>
+                </q-card-section>
+            </q-card>
+        </q-dialog>
+
+        <q-card flat>
+            <q-card-section class="q-pb-none q-pt-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    @click="showFilters = !showFilters"
+                    icon="filter_list"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                />
+
+                <q-chip
+                    color="indigo"
+                    text-color="white"
+                    v-if="query.filters.name"
+                    :label="`Nome = ${query.filters.name}`"
+                    square
                 >
-                    <template v-slot:header-selection="scope">
-                        <q-checkbox v-model="scope.selected" />
+                    <q-icon
+                        name="disabled_by_default"
+                        size="xs"
+                        @click="removeFilter('name')"
+                        class="q-ml-sm cursor-pointer"
+                    />
+                </q-chip>
+
+                <q-chip
+                    color="indigo"
+                    text-color="white"
+                    v-if="query.filters.email"
+                    :label="`E-mail = ${query.filters.email}`"
+                    square
+                >
+                    <q-icon
+                        name="disabled_by_default"
+                        size="xs"
+                        @click="removeFilter('email')"
+                        class="q-ml-sm cursor-pointer"
+                    />
+                </q-chip>
+
+                <q-table
+                    :rows="students.data"
+                    :columns="columns"
+                    flat
+                    class="text-blue-grey-10"
+                    v-model:selected="selected"
+                    selection="multiple"
+                    hide-pagination
+                    :pagination.sync="{rowsPerPage: requestData.rowsPerPage}"
+                >
+                <template v-slot:header-selection="scope">
+                        <q-checkbox
+                            v-model="scope.selected"
+                            color="indigo"
+                            checked-icon="task_alt"
+                            unchecked-icon="radio_button_unchecked"
+                            indeterminate-icon="remove_circle_outline"
+                        />
                     </template>
 
                     <template v-slot:body-selection="scope">
                         <q-checkbox
-                                :model-value="scope.selected"
-                                @update:model-value="(val, evt) => { Object.getOwnPropertyDescriptor(scope, 'selected').set(val, evt) }"
+                            :model-value="scope.selected"
+                            @update:model-value="(val, evt) => { Object.getOwnPropertyDescriptor(scope, 'selected').set(val, evt) }"
+                            color="indigo"
+                            checked-icon="task_alt"
+                            unchecked-icon="radio_button_unchecked"
                         />
                     </template>
 
@@ -402,8 +331,8 @@
                                 {{ props.col.label }}
 
                                 <q-icon
-                                        :name="query.sort == 'desc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-                                        v-if="props.col.name === query.orderBy"
+                                    :name="query.sort == 'desc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+                                    v-if="props.col.name === query.orderBy"
                                 />
                             </div>
                         </q-th>
@@ -420,8 +349,10 @@
                     <template v-slot:body-cell-groups_name="props">
                         <q-td :props="props">
                             <q-chip
-                                    v-for="group in props.row.groups"
-                                    class="adm-chip-primary"
+                                v-for="group in props.row.groups"
+                                color="indigo"
+                                text-color="white"
+                                square
                             >
                                 {{ group.name }}
                             </q-chip>
@@ -431,11 +362,8 @@
                     <template v-slot:body-cell-active="props">
                         <q-td :props="props">
                             <q-chip
-                                    text-color="white"
-                                    :class="{
-                                    'adm-bg-positive': props.row.active,
-                                    'adm-bg-negative': !props.row.active
-                                }"
+                                text-color="white"
+                                :color="props.row.active ? 'green' : 'red'"
                             >
                                 {{ props.row.active ? 'Ativo' : 'Inativo' }}
                             </q-chip>
@@ -444,17 +372,17 @@
 
                     <template v-slot:body-cell-actions="props">
                         <q-td :props="props">
-                            <div class="adm-fw-700 adm-fs-16">
+                            <div class="row items-center justify-center adm-fw-700 adm-fs-16">
                                 <q-btn icon="more_vert" flat v-if="canStudentEdit || canStudentDestroy">
-                                    <q-menu :offset="[65, 0]">
+                                    <q-menu :offset="[45, 0]">
                                         <q-list>
                                             <q-item
-                                                    v-if="canStudentEdit"
-                                                    clickable
-                                                    @click="edit(props.row.id)"
-                                                    class="text-blue-grey-10 flex items-center"
+                                                v-if="canStudentEdit"
+                                                clickable
+                                                @click="edit(props.row.id)"
+                                                class="text-blue-grey-10 flex items-center"
                                             >
-                                                <q-icon name="edit" size="xs"/>
+                                                <q-icon name="edit" size="xs" color="indigo" />
 
                                                 <q-item-section no-wrap>
                                                     <div class="q-ml-sm"> Editar </div>
@@ -464,26 +392,12 @@
                                             <q-separator/>
 
                                             <q-item
-                                                    clickable
-                                                    @click="show(props.row.id)"
-                                                    class="text-blue-grey-10 flex items-center"
+                                                v-if="canStudentDestroy"
+                                                clickable
+                                                @click="destroy(props.row.id)"
+                                                class="text-blue-grey-10 flex flex-center"
                                             >
-                                                <q-icon name="visibility" size="xs"/>
-
-                                                <q-item-section no-wrap>
-                                                    <div class="q-ml-sm"> Vizualizar </div>
-                                                </q-item-section>
-                                            </q-item>
-
-                                            <q-separator/>
-
-                                            <q-item
-                                                    v-if="canStudentDestroy"
-                                                    clickable
-                                                    @click="destroy(props.row.id)"
-                                                    class="text-blue-grey-10 flex flex-center"
-                                            >
-                                                <q-icon name="close" size="xs"/>
+                                                <q-icon name="close" size="xs" color="red"/>
 
                                                 <q-item-section no-wrap>
                                                     <div class="q-ml-sm"> Excluir </div>
@@ -492,47 +406,36 @@
                                         </q-list>
                                     </q-menu>
                                 </q-btn>
-
-                                <q-btn
-                                        v-else
-                                        @click="show(props.row.id)"
-                                        class="text-blue-grey-10 flex flex-center text-no-wrap"
-                                        flat
-                                        no-caps
-                                >
-                                    <q-icon name="visibility" size="xs"/>
-                                    <div class="q-ml-sm"> Visualizar </div>
-                                </q-btn>
                             </div>
                         </q-td>
                     </template>
                 </q-table>
 
-                <div class="row items-center text-grey">
+                <div class="row items-center text-blue-grey-10">
                     <q-space/>
 
-                    <div class="row items-center text-grey">
+                    <div class="row items-center text-blue-grey-10">
                         Resultado por página
 
                         <q-select
-                                :options="[5, 10, 15]"
-                                v-model="requestData.rowsPerPage"
-                                borderless
-                                class="q-ml-md"
-                                @update:model-value="submit"
+                            :options="[5, 10, 15]"
+                            v-model="requestData.rowsPerPage"
+                            borderless
+                            class="q-ml-md"
+                            @update:model-value="submit"
                         />
                     </div>
 
                     <q-pagination
-                            v-model="requestData.page"
-                            :max="students.meta.last_page"
-                            @update:model-value="submit"
-                            direction-links
-                            boundary-links
-                            color="grey"
-                            input
-                            icon-first="keyboard_double_arrow_left"
-                            icon-last="keyboard_double_arrow_right"
+                        v-model="requestData.page"
+                        :max="students.meta.last_page"
+                        @update:model-value="submit"
+                        direction-links
+                        boundary-links
+                        color="indigo"
+                        input
+                        icon-first="keyboard_double_arrow_left"
+                        icon-last="keyboard_double_arrow_right"
                     />
                 </div>
             </q-card-section>
