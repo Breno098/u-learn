@@ -31,6 +31,7 @@ class PasswordSendLinkRequest extends FormRequest
     public function messages()
     {
         return [
+            'email.required' => 'Insira um e-mail',
             'email.exists' => 'O email não foi encontrado'
         ];
     }

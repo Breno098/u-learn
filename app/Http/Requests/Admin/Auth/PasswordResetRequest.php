@@ -35,8 +35,9 @@ class PasswordResetRequest extends FormRequest
     {
         return [
             'email.exists' => 'O email não foi encontrado',
-            'password.confirmed' => 'Senhas não conferem. Verifique por favor.',
-            'password.min' => 'A senha deve ter no mínimo 8 caracteres'
+            'password.confirmed' => 'Senhas não conferem.',
+            'password.min' => 'A senha deve ter no mínimo 8 caracteres',
+            'password.required' => 'Digite um senha'
         ];
     }
 }

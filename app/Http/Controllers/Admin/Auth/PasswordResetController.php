@@ -52,7 +52,7 @@ class PasswordResetController extends Controller
 
         if (! $responseOk) {
             throw ValidationException::withMessages([
-                'email' => 'Erro ao redefinir a senha.',
+                'password_reset' => 'Erro ao redefinir a senha.',
             ]);
         }
 
