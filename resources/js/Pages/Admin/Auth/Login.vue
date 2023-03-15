@@ -1,6 +1,7 @@
 <script setup>
     import GuestLayout from '@/Layouts/Admin/GuestLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
+    import { ref } from 'vue';
 
     defineProps({
         status: String,
@@ -19,6 +20,8 @@
     };
 
     const goResetPassword = () => useForm().get(route('admin.auth.forgot-password-form'));
+
+    const seePass = ref(false)
 </script>
 
 <template>
@@ -59,12 +62,28 @@
                                 v-model="form.password"
                                 label="Senha"
                                 color="indigo"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 @keydown.enter.prevent="submit"
                                 :bottom-slots="Boolean(form.errors.email)"
                             >
                                 <template v-slot:prepend>
                                     <q-icon name="password" />
+                                </template>
+
+                                <template v-slot:append>
+                                    <q-icon
+                                        name="visibility_off"
+                                        @click="seePass = false"
+                                        class="cursor-pointer"
+                                        v-if="seePass"
+                                    />
+
+                                    <q-icon
+                                        name="visibility"
+                                        @click="seePass = true"
+                                        class="cursor-pointer"
+                                        v-else
+                                     />
                                 </template>
 
                                 <template v-slot:hint>

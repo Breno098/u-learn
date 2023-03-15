@@ -1,6 +1,7 @@
 <script setup>
     import GuestLayout from '@/Layouts/Admin/GuestLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
+    import { ref } from 'vue';
 
     const props = defineProps({
         email: String,
@@ -24,6 +25,8 @@
     const goAuth = () => {
         useForm().get(route('admin.auth.sign-in'))
     }
+
+    const seePass = ref(false)
 </script>
 
 <template>
@@ -54,11 +57,27 @@
                                 v-model="form.password"
                                 label="Nova Senha"
                                 color="indigo"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 :bottom-slots="Boolean(form.errors.password)"
                             >
                                 <template v-slot:prepend>
                                     <q-icon name="password" />
+                                </template>
+
+                                <template v-slot:append>
+                                    <q-icon
+                                        name="visibility_off"
+                                        @click="seePass = false"
+                                        class="cursor-pointer"
+                                        v-if="seePass"
+                                    />
+
+                                    <q-icon
+                                        name="visibility"
+                                        @click="seePass = true"
+                                        class="cursor-pointer"
+                                        v-else
+                                     />
                                 </template>
 
                                 <template v-slot:hint>
@@ -71,11 +90,27 @@
                                 v-model="form.password_confirmation"
                                 label="Confirme a Senha"
                                 color="indigo"
-                                type="password"
+                                :type="seePass ? 'text' : 'password'"
                                 :bottom-slots="Boolean(form.errors.password_confirmation)"
                             >
                                 <template v-slot:prepend>
                                     <q-icon name="password" />
+                                </template>
+
+                                <template v-slot:append>
+                                    <q-icon
+                                        name="visibility_off"
+                                        @click="seePass = false"
+                                        class="cursor-pointer"
+                                        v-if="seePass"
+                                    />
+
+                                    <q-icon
+                                        name="visibility"
+                                        @click="seePass = true"
+                                        class="cursor-pointer"
+                                        v-else
+                                     />
                                 </template>
 
                                 <template v-slot:hint>
