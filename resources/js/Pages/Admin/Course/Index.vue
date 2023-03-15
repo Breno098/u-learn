@@ -281,7 +281,11 @@
 
                     <template v-slot:header-cell="props">
                         <q-th :props="props">
-                            <div class="adm-fw-700 adm-fs-16 cursor-pointer" @click="sortBy(props.col.name)">
+                            <div v-if="props.col.sortable === false" class="adm-fw-700 adm-fs-16">
+                                {{ props.col.label }}
+                            </div>
+
+                            <div v-else class="adm-fw-700 adm-fs-16 cursor-pointer" @click="sortBy(props.col.name)">
                                 {{ props.col.label }}
 
                                 <q-icon

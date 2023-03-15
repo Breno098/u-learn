@@ -98,17 +98,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-1">
-                        <q-input
-                            outlined
-                            v-model="form.id"
-                            label="ID"
-                            disable
-                            color="indigo"
-                        />
-                    </div>
-
-                    <div class="col-12 col-md-5">
+                    <div class="col-12 col-md-6">
                         <q-input
                             outlined
                             v-model="form.name"

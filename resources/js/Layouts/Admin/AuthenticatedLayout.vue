@@ -141,7 +141,7 @@
         </q-drawer>
 
         <q-page-container>
-            <q-page class="adm-main-container  bg-indigo-1">
+            <q-page class="adm-main-container bg-indigo-1">
                 <slot />
             </q-page>
         </q-page-container>

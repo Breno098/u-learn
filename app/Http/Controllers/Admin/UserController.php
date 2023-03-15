@@ -64,7 +64,6 @@ class UserController extends Controller
             'canUserStore' => Authorize::any('user_store'),
             'canUserEdit' => Authorize::any('user_update'),
             'canUserDestroy' => Authorize::any('user_destroy'),
-            'canRoleIndex' => Authorize::any('role_index'),
         ]);
     }
 

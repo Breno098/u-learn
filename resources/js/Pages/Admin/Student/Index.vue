@@ -89,8 +89,6 @@
 
     const edit = (id) => useForm().get(route('admin.student.edit', id));
 
-    const show = (id) => useForm().get(route('admin.student.show', id));
-
     const destroy = (id) => {
         $q.dialog({
             component: AdminDialog,
@@ -106,7 +104,7 @@
                     $q.dialog({
                         component: AdminDialog,
                         componentProps: {
-                            message: 'Usuário excluído com sucesso',
+                            message: 'Aluno excluído com sucesso',
                             icon: { name: 'check', color: 'green' },
                             timeout: 3000
                         }
@@ -299,7 +297,7 @@
                     hide-pagination
                     :pagination.sync="{rowsPerPage: requestData.rowsPerPage}"
                 >
-                <template v-slot:header-selection="scope">
+                    <template v-slot:header-selection="scope">
                         <q-checkbox
                             v-model="scope.selected"
                             color="indigo"
@@ -321,7 +319,11 @@
 
                     <template v-slot:header-cell="props">
                         <q-th :props="props">
-                            <div class="adm-fw-700 adm-fs-16 cursor-pointer" @click="sortBy(props.col.name)">
+                            <div v-if="props.col.sortable === false" class="adm-fw-700 adm-fs-16">
+                                {{ props.col.label }}
+                            </div>
+
+                            <div v-else class="adm-fw-700 adm-fs-16 cursor-pointer" @click="sortBy(props.col.name)">
                                 {{ props.col.label }}
 
                                 <q-icon
@@ -345,6 +347,7 @@
                             <q-chip
                                 text-color="white"
                                 :color="props.row.active ? 'green' : 'red'"
+                                square
                             >
                                 {{ props.row.active ? 'Ativo' : 'Inativo' }}
                             </q-chip>

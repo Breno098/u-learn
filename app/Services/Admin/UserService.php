@@ -46,11 +46,7 @@ class UserService
             $query->where('phone', $phone);
         }
 
-        if ($orderBy === 'roles_name') {
-            $query->join('role_user', 'users.id', '=', 'role_user.user_id')
-                ->join('roles', 'roles.id', '=', 'role_user.role_id')
-                ->orderBy('roles.name', $sort);
-        } else if (in_array($orderBy, (new User)->getFillable())) {
+        if (in_array($orderBy, (new User)->getFillable())) {
             $query->orderBy("users.{$orderBy}", $sort);
         }
 
