@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed } from 'vue'
+    import { ref } from 'vue'
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
@@ -49,7 +49,8 @@
             componentProps: {
                 title: 'Excluir usuário',
                 message: 'Tem certeza que deseja excluir esse usuário?',
-                confirm: true
+                confirm: true,
+                icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
             useForm().delete(route('admin.user.destroy', form.id), {
@@ -77,9 +78,9 @@
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <Head :title="user.name" />
+    <Head :title="user.name" />
 
+    <AuthenticatedLayout>
         <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
                 <div class="flex col-12 col-md-6 justify-start items-center">

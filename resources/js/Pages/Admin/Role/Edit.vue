@@ -3,7 +3,7 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
-    import DialogConfirm from '@/Components/DialogConfirm.vue';
+    import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
 
@@ -24,29 +24,37 @@
     const submit = () => {
         form.put(route("admin.role.update", form.id), {
                 onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Grupo atualizado com sucesso',
-                        position: 'top',
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Grupo atualizado com sucesso',
+                            icon: { name: 'check', color: 'green' },
+                            timeout: 3000
+                        }
                     })
                 },
             })
     };
 
-    function destroy() {
+    const destroy = () => {
         $q.dialog({
-            component: DialogConfirm,
+            component: AdminDialog,
             componentProps: {
                 title: 'Excluir grupo',
                 message: 'Tem certeza que deseja excluir essa grupo?',
+                confirm: true,
+                icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
             useForm().delete(route('admin.role.destroy', form.id), {
                 onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Grupo excluído com sucesso',
-                        position: 'top',
+                    $q.dialog({
+                        component: AdminDialog,
+                        componentProps: {
+                            message: 'Grupo excluído com sucesso',
+                            icon: { name: 'check', color: 'green' },
+                            timeout: 3000
+                        }
                     })
                 }
             })
@@ -71,110 +79,120 @@
             }
         }
     })
+
+    const goBack = () =>  useForm().get(route('admin.role.index'));
 </script>
 
 <template>
+    <Head :title="role.name" />
+
     <AuthenticatedLayout>
-        <Head title="Grupo | Editar" />
+        <q-card flat class="q-mb-lg">
+            <q-card-section class="row items-center q-px-lg">
+                <div class="flex col-12 col-md-6 justify-start items-center">
+                    <q-icon name="o_school" color="indigo" size="md"/>
 
-        <div class="row q-mb-lg">
-            <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Editar grupo de usuários </div>
-
-                <q-breadcrumbs
-                    class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
-                    gutter="xs"
-                >
-                    <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Seções" class="text-grey"/>
-                    <q-breadcrumbs-el label="Editar grupo de usuários" class="text-primary" />
-                </q-breadcrumbs>
-            </div>
-
-            <div class="col-12 col-md-6 flex justify-end items-center">
-                <q-btn
-                    v-if="canRoleDestroy"
-                    color="negative"
-                    class="q-mr-md"
-                    rounded
-                    no-caps
-                    outline
-                    @click="destroy"
-                >
-                    <q-icon name="close" size="xs"/>
-
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Excluir grupo
-                    </div>
-                </q-btn>
-
-                <q-btn
-                    color="primary"
-                    rounded
-                    no-caps
-                    @click="submit"
-                    :disabled="form.processing"
-                >
-                    <q-icon name="check" size="xs"/>
-
-                    <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                        Salvar
-                    </div>
-                </q-btn>
-            </div>
-        </div>
-
-        <div class="bg-white q-py-lg q-px-lg adm-br-16">
-            <div class="row q-col-gutter-lg">
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Informações
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md">
+                        Grupo de permissão: {{ role.name }}
                     </div>
                 </div>
 
-                <div class="col-12 col-md-12">
-                    <q-input
-                        outlined
-                        v-model="form.name"
-                        label="Nome"
-                        :bottom-slots="Boolean(errors.name)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.name }} </div>
-                        </template>
-                    </q-input>
-                </div>
+                <div class="col-12 col-md-6 flex justify-end items-center">
+                    <q-btn
+                        color="negative"
+                        class="q-mr-md"
+                        no-caps
+                        outline
+                        @click="destroy"
+                        icon="close"
+                        label="Excluir"
+                        v-if="canRoleDestroy"
+                    />
 
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Permissões
-                    </div>
-                </div>
-
-                <div class="col-12 items-center q-mt-xs">
-                    <q-checkbox
-                        :label="allSelected ? 'Desselecionar todas as permissões' : 'Selecionar todas as permissões'"
-                        v-model="allSelected"
+                    <q-btn
+                        color="indigo"
+                        no-caps
+                        @click="submit"
+                        :disabled="form.processing"
+                        icon="check"
+                        label="Salvar"
                     />
                 </div>
+            </q-card-section>
+        </q-card>
 
-                <div
-                    class="col-12 col-md-4"
-                    v-for="perm, index in permissions"
-                >
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-16">
-                        {{ index }}
+        <q-card flat>
+            <q-card-section class="q-pb-none q-py-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    icon="chevron_left"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                    label="Voltar"
+                    no-caps
+                    @click="goBack"
+                />
+
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Informações
+                        </div>
                     </div>
 
-                    <div v-for="permission in perm">
+                    <div class="col-12 col-md-12">
+                        <q-input
+                            outlined
+                            v-model="form.name"
+                            label="Nome"
+                            :bottom-slots="Boolean(errors.name)"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.name }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Permissões
+                        </div>
+                    </div>
+
+                    <div class="col-12 items-center q-mt-xs">
                         <q-checkbox
-                            v-model="form.permission_ids"
-                            :label="permission.label"
-                            :val="permission.id"
+                            :label="allSelected ? 'Desselecionar todas as permissões' : 'Selecionar todas as permissões'"
+                            v-model="allSelected"
+                            color="indigo"
+                            checked-icon="task_alt"
+                            unchecked-icon="radio_button_unchecked"
+                            indeterminate-icon="remove_circle_outline"
                         />
                     </div>
+
+                    <div
+                        class="col-12 col-md-3"
+                        v-for="perm, index in permissions"
+                    >
+                        <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-16">
+                            {{ index }}
+                        </div>
+
+                        <div v-for="permission in perm">
+                            <q-checkbox
+                                v-model="form.permission_ids"
+                                :label="permission.label"
+                                :val="permission.id"
+                                color="indigo"
+                                checked-icon="task_alt"
+                                unchecked-icon="radio_button_unchecked"
+                            />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </q-card-section>
+        </q-card>
     </AuthenticatedLayout>
 </template>

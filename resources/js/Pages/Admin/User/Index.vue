@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed } from 'vue';
+    import { ref } from 'vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { useQuasar } from 'quasar'
@@ -97,6 +97,8 @@
             componentProps: {
                 title: 'Excluir usuário',
                 message: 'Tem certeza que deseja excluir esse usuário?',
+                confirm: true,
+                icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
             useForm().delete(route('admin.user.destroy', id), {
@@ -120,6 +122,8 @@
             componentProps: {
                 title: 'Excluir selecionados',
                 message: 'Tem certeza que deseja excluir usuários selecionados?',
+                confirm: true,
+                icon: { name: 'playlist_remove', color: 'red' }
             },
       }).onOk(() => {
         useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.user.destroy-multiples'), {
