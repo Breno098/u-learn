@@ -23,10 +23,6 @@
         address: props.student.address,
         link: props.student.link,
         active: props.student.active,
-        customer_cpf: props.student.customer_cpf,
-        customer_phone: props.student.customer_phone,
-        customer_address: props.student.customer_address,
-        equal_data: props.student.equal_data,
         group_ids: props.student.group_ids,
     });
 

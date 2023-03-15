@@ -3,67 +3,44 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
+    import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
 
     const props = defineProps({
         errors: Object,
         groups: Array,
-
+        canStudentDestroy: Boolean,
     });
 
     const form = useForm({
         id: null,
         name: null,
         email: null,
-        password: null,
         cpf: null,
         phone: null,
         address: null,
         link: null,
         active: true,
-        customer_cpf: null,
-        customer_phone: null,
-        customer_address: null,
-        equal_data: false,
         group_ids: [],
     });
 
     const submit = () => {
-        form
-            .transform((data) => ({
-                ...data,
-                customer_cpf: customerCPF.value,
-                customer_phone: customerPhone.value,
-                customer_address: customerAddress.value,
-             }))
-            .post(route("admin.student.store"), {
-                preserveState: true,
-                preserveScroll: true,
-                onSuccess: () => {
-                    $q.notify({
-                        type: 'positive',
+        form.post(route("admin.student.store"), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                $q.dialog({
+                    component: AdminDialog,
+                    componentProps: {
                         message: 'Aluno cadastrado com sucesso',
-                        position: 'top',
-                    })
-                },
-            })
+                        icon: { name: 'check', color: 'green' },
+                        timeout: 1000
+                    }
+                })
+            },
+        })
     };
-
-    const customerCPF = computed({
-        get: () => form.equal_data ? form.cpf : form.customer_cpf,
-        set: (newValue) => form.customer_cpf = newValue
-    })
-
-    const customerPhone = computed({
-        get: () => form.equal_data ? form.phone : form.customer_phone,
-        set: (newValue) => form.customer_phone = newValue
-    })
-
-    const customerAddress = computed({
-        get: () => form.equal_data ? form.address : form.customer_address,
-        set: (newValue) => form.customer_address = newValue
-    })
 
     const optionsGroups = ref(props.groups)
 
@@ -71,151 +48,176 @@
         update(() => optionsGroups.value = props.groups.filter(s => s.name.toLowerCase().indexOf(val.toLowerCase()) > -1))
     }
 
-    const goBack = () => useForm().get(route('admin.student.index'))
+    const goBack = () =>  useForm().get(route('admin.student.index'));
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <Head title="Aluno | Novo" />
+        <Head title="Novo aluno" />
 
-        <div class="row q-mb-lg">
-            <div class="column col-12 col-md-6 justify-center">
-                <div class="adm-fs-28 adm-fw-700 adm-lh-32 text-grey-8"> Novo aluno </div>
+        <q-card flat class="q-mb-lg">
+            <q-card-section class="row items-center q-px-lg">
+                <div class="flex col-12 col-md-6 justify-start items-center">
+                    <q-icon name="o_school" color="indigo" size="md"/>
 
-                <q-breadcrumbs
-                    class="text-grey q-mt-sm adm-fs-13 adm-fw-400 adm-lh-16"
-                    gutter="xs"
-                >
-                    <q-breadcrumbs-el label="Home" class="text-grey"/>
-                    <q-breadcrumbs-el label="Alunos" class="text-grey"/>
-                    <q-breadcrumbs-el label="Novo aluno" class="text-primary" />
-                </q-breadcrumbs>
-            </div>
-        </div>
-
-        <div class="bg-white q-py-lg q-px-lg adm-br-16">
-            <div class="row q-col-gutter-lg">
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Dados do aluno
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md">
+                        Novo aluno
                     </div>
                 </div>
 
-                <div class="col-12 col-md-2">
-                    <q-input
-                        outlined
-                        v-model="form.id"
-                        label="ID do aluno"
-                        disable
+                <div class="col-12 col-md-6 flex justify-end items-center">
+                    <q-btn
+                        color="indigo"
+                        no-caps
+                        @click="submit"
+                        :disabled="form.processing"
+                        icon="check"
+                        label="Salvar"
                     />
                 </div>
+            </q-card-section>
+        </q-card>
 
-                <div class="col-12 col-md-4">
-                    <q-input
-                        outlined
-                        v-model="form.name"
-                        label="Nome do aluno"
-                        :bottom-slots="Boolean(errors.name)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.name }} </div>
-                        </template>
-                    </q-input>
-                </div>
+        <q-card flat>
+            <q-card-section class="q-pb-none q-py-lg">
+                <q-btn
+                    dense
+                    color="indigo"
+                    class="absolute inset-shadow-down"
+                    icon="chevron_left"
+                    style="top: 0; left: 12px; transform: translateY(-50%);"
+                    label="Voltar"
+                    no-caps
+                    @click="goBack"
+                />
 
-                <div class="col-12 col-md-3">
-                    <q-input
-                        outlined
-                        v-model="form.cpf"
-                        label="CPF do aluno"
-                        :bottom-slots="Boolean(errors.cpf)"
-                        mask="###.###.###-##"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.cpf }} </div>
-                        </template>
-                    </q-input>
-                </div>
+                <div class="row q-col-gutter-lg">
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Informações
+                        </div>
+                    </div>
 
-                <div class="col-12 col-md-3">
-                    <q-select
-                        :options="[{
-                            label: 'Ativo',
-                            value: true
-                        }, {
-                            label: 'Inativo',
-                            value: false
-                        }]"
-                        outlined
-                        v-model="form.active"
-                        label="Status"
-                        :bottom-slots="Boolean(errors.active)"
-                        map-options
-                        emit-value
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.active }} </div>
-                        </template>
+                    <div class="col-12 col-md-1">
+                        <q-input
+                            outlined
+                            v-model="form.id"
+                            label="ID"
+                            disable
+                            color="indigo"
+                        />
+                    </div>
 
-                        <template v-slot:selected-item="scope">
-                            <q-chip
-                                :tabindex="scope.tabindex"
-                                text-color="white"
-                                :class="{
-                                    'adm-bg-positive':  scope.opt.value,
-                                    'adm-bg-negative': !scope.opt.value
-                                }"
-                                dense
-                                class="q-my-none"
-                            >
-                                {{ scope.opt.label }}
-                            </q-chip>
-                        </template>
-                    </q-select>
-                </div>
+                    <div class="col-12 col-md-5">
+                        <q-input
+                            outlined
+                            v-model="form.name"
+                            label="Nome"
+                            :bottom-slots="Boolean(errors.name)"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.name }} </div>
+                            </template>
+                        </q-input>
+                    </div>
 
-                <div class="col-12 col-md-9">
-                    <q-input
-                        outlined
-                        v-model="form.email"
-                        label="E-mail do aluno"
-                        :bottom-slots="Boolean(errors.email)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.email }} </div>
-                        </template>
-                    </q-input>
-                </div>
+                    <div class="col-12 col-md-3">
+                        <q-input
+                            outlined
+                            v-model="form.cpf"
+                            label="CPF"
+                            :bottom-slots="Boolean(errors.cpf)"
+                            mask="###.###.###-##"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.cpf }} </div>
+                            </template>
+                        </q-input>
+                    </div>
 
-                <div class="col-12 col-md-3">
-                    <q-input
-                        outlined
-                        v-model="form.phone"
-                        label="Telefone do aluno"
-                        :bottom-slots="Boolean(errors.phone)"
-                        mask="(##) #########"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.phone }} </div>
-                        </template>
-                    </q-input>
-                </div>
+                    <div class="col-12 col-md-3">
+                        <q-select
+                            :options="[{
+                                label: 'Ativo',
+                                value: true
+                            }, {
+                                label: 'Inativo',
+                                value: false
+                            }]"
+                            outlined
+                            v-model="form.active"
+                            label="Status"
+                            :bottom-slots="Boolean(errors.active)"
+                            map-options
+                            emit-value
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.active }} </div>
+                            </template>
 
-                <div class="col-12 col-md-12">
-                    <q-input
+                            <template v-slot:selected-item="scope">
+                                <q-chip
+                                    :tabindex="scope.tabindex"
+                                    text-color="white"
+                                    :color="scope.opt.value ? 'green' : 'red'"
+                                    dense
+                                    class="q-my-none"
+                                    square
+                                >
+                                    {{ scope.opt.label }}
+                                </q-chip>
+                            </template>
+                        </q-select>
+                    </div>
+
+                    <div class="col-12 col-md-9">
+                        <q-input
+                            outlined
+                            v-model="form.email"
+                            label="E-mail"
+                            :bottom-slots="Boolean(errors.email)"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.email }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <q-input
+                            outlined
+                            v-model="form.phone"
+                            label="Telefone"
+                            :bottom-slots="Boolean(errors.phone)"
+                            mask="(##) #########"
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.phone }} </div>
+                            </template>
+                        </q-input>
+                    </div>
+
+                    <div class="col-12 col-md-12">
+                        <q-input
                             outlined
                             v-model="form.address"
-                            label="Endereço do aluno"
+                            label="Endereço"
                             :bottom-slots="Boolean(errors.address)"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.address }} </div>
-                        </template>
-                    </q-input>
-                </div>
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.address }} </div>
+                            </template>
+                        </q-input>
+                    </div>
 
-                <div class="col-12 col-md-12">
-                    <q-select
+                    <div class="col-12 col-md-12">
+                        <q-select
                             :options="optionsGroups"
                             option-value="id"
                             option-label="name"
@@ -223,122 +225,39 @@
                             map-options
                             outlined
                             v-model="form.group_ids"
-                            label="Grupos de alunos"
+                            label="Grupos"
                             :bottom-slots="Boolean(errors.group_ids)"
                             clearable
                             use-input
                             @filter="filterGroups"
                             multiple
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.group_ids }} </div>
-                        </template>
+                            color="indigo"
+                        >
+                            <template v-slot:hint>
+                                <div class="text-red"> {{ errors.group_ids }} </div>
+                            </template>
 
-                        <template v-slot:selected-item="scope">
-                            <q-chip
-                                    class="adm-chip-primary q-my-none"
+                            <template v-slot:selected-item="scope">
+                                <q-chip
+                                    class="q-my-none"
                                     :label="scope.opt.name"
                                     dense
-                            >
-                                <q-icon
+                                    color="indigo"
+                                    text-color="white"
+                                    square
+                                >
+                                    <q-icon
                                         name="cancel"
                                         size="xs"
                                         @click="scope.removeAtIndex(scope.index)"
                                         class="q-ml-xs cursor-pointer"
-                                />
-                            </q-chip>
-                        </template>
-                    </q-select>
-                </div>
-
-                <div class="col-12 items-center q-mt-xs">
-                    <div class="q-ml-sm text-grey-8 adm-fw-700 adm-lh-32 adm-fs-23">
-                        Dados do cliente
+                                    />
+                                </q-chip>
+                            </template>
+                        </q-select>
                     </div>
                 </div>
-
-                <div class="col-12 col-md-6">
-                    <q-input
-                        outlined
-                        v-model="customerCPF"
-                        label="CPF do cliente"
-                        :bottom-slots="Boolean(errors.customer_cpf)"
-                        mask="###.###.###-##"
-                        :disable="form.equal_data"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.customer_cpf }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <q-input
-                        outlined
-                        v-model="customerPhone"
-                        label="Telefone do cliente"
-                        :bottom-slots="Boolean(errors.customer_phone)"
-                        mask="(##) #########"
-                        :disable="form.equal_data"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.customer_phone }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12 col-md-12">
-                    <q-input
-                        outlined
-                        v-model="customerAddress"
-                        label="Endereço do cliente"
-                        :bottom-slots="Boolean(errors.customer_address)"
-                        :disable="form.equal_data"
-                    >
-                        <template v-slot:hint>
-                            <div class="text-red"> {{ errors.customer_address }} </div>
-                        </template>
-                    </q-input>
-                </div>
-
-                <div class="col-12">
-                    <q-checkbox
-                        v-model="form.equal_data"
-                        label="Dados iguais do aluno"
-                    />
-                </div>
-
-                <div class="col-12 flex justify-end items-center">
-                    <q-btn
-                        color="primary"
-                        class="q-mr-md"
-                        rounded
-                        no-caps
-                        outline
-                        @click="goBack"
-                    >
-                        <q-icon name="chevron_left" size="xs"/>
-
-                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                            Voltar
-                        </div>
-                    </q-btn>
-
-                    <q-btn
-                        color="primary"
-                        rounded
-                        no-caps
-                        @click="submit"
-                        :disabled="form.processing"
-                    >
-                        <q-icon name="add" size="xs"/>
-
-                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                            Criar aluno
-                        </div>
-                    </q-btn>
-                </div>
-            </div>
-        </div>
+            </q-card-section>
+        </q-card>
     </AuthenticatedLayout>
 </template>

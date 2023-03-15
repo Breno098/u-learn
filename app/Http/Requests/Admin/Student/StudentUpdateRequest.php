@@ -31,7 +31,6 @@ class StudentUpdateRequest extends FormRequest
             'cpf' => 'nullable|string',
             'phone' => 'nullable',
             'address' => 'nullable|string',
-            'equal_data' => 'nullable|integer',
             'group_ids' => 'nullable|array',
         ];
     }

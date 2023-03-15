@@ -22,24 +22,18 @@
         align: 'left',
         label: 'Nome',
         field: 'name',
-        style: 'width: 25%',
+        style: 'width: 35%',
     }, {
         name: 'email',
         align: 'left',
         label: 'E-mail',
         field: 'email',
-        style: 'width: 25%',
+        style: 'width: 35%',
     }, {
         name: 'cpf',
         align: 'left',
         label: 'CPF',
         field: 'cpf',
-        style: 'width: 25%',
-    }, {
-        name: 'groups_name',
-        align: 'left',
-        label: 'Grupos de alunos',
-        field: student => student.groups,
         style: 'width: 25%',
     }, {
         name: 'active',
@@ -344,19 +338,6 @@
                                 {{  props.col.label  }}
                             </div>
                         </q-th>
-                    </template>
-
-                    <template v-slot:body-cell-groups_name="props">
-                        <q-td :props="props">
-                            <q-chip
-                                v-for="group in props.row.groups"
-                                color="indigo"
-                                text-color="white"
-                                square
-                            >
-                                {{ group.name }}
-                            </q-chip>
-                        </q-td>
                     </template>
 
                     <template v-slot:body-cell-active="props">
