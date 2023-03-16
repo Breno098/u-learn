@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
         $this->commonPermission('usuários', 'user');
         $this->commonPermission('grupos', 'group');
         $this->commonPermission('brindes', 'item');
-        $this->commonPermission('seções', 'section');
+        $this->commonPermission('certificados', 'certificate');
         $this->commonPermission('vagas', 'job_vacancy');
         $this->commonPermission('parceiros', 'partner');
         $this->commonPermission('perguntas frenquêntes', 'common_question');
@@ -33,13 +33,6 @@ class PermissionSeeder extends Seeder
 
         Permission::create(['label' => "Agenda", "key" => "schedule_index", "level" => 'Eventos']);
         Permission::create(['label' => "Notificações", "key" => "notification_index", "level" => 'Eventos']);
-
-        Permission::create(['label' => "Financeiro", "key" => "financial_index", "level" => 'Administrativo']);
-        Permission::create(['label' => "Comercial", "key" => "commercial_index", "level" => 'Administrativo']);
-
-        Permission::create(['label' => "Cancelar pedido", "key" => "order_cancel", "level" => 'Pedido']);
-        Permission::create(['label' => "Visualizar situação do pedido", "key" => "order_situation_show", "level" => 'Pedido']);
-        Permission::create(['label' => "Editar situação do pedido", "key" => "order_situation_update", "level" => 'Pedido']);
     }
 
 

@@ -5,10 +5,9 @@ use App\Http\Controllers\Admin\Auth\PasswordResetController;
 use App\Http\Controllers\Admin\Auth\PasswordSendLinkController;
 use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\CommonQuestionController;
 use App\Http\Controllers\Admin\CourseController;
-use App\Http\Controllers\Admin\CommercialController;
-use App\Http\Controllers\Admin\FinancialController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItemController;
@@ -63,8 +62,6 @@ Route::middleware('auth:admin')
     ->name('admin.')
     ->group(function() {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
-        Route::get('/commercial', [CommercialController::class, 'index'])->name('commercial.index');
-        Route::get('/financial', [FinancialController::class, 'index'])->name('financial.index');
         Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
         Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
 
@@ -80,6 +77,9 @@ Route::middleware('auth:admin')
 
         Route::resource('student', StudentController::class);
         Route::post('student/destroy-multiples', [StudentController::class, 'destroyMultiples'])->name('student.destroy-multiples');
+
+        Route::resource('certificate', CertificateController::class);
+        Route::post('certificate/destroy-multiples', [CertificateController::class, 'destroyMultiples'])->name('certificate.destroy-multiples');
 
         Route::resource('category', CategoryController::class);
         Route::post('category/destroy-multiples', [CategoryController::class, 'destroyMultiples'])->name('category.destroy-multiples');

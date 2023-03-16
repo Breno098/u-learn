@@ -69,6 +69,13 @@ return [
                 'can' => 'course_index'
             ],
             [
+                'route' => 'admin.certificate.index',
+                'active' => 'admin.certificate*',
+                'label' => 'Certificados',
+                'icon' => 'o_card_membership',
+                'can' => 'certificate_index'
+            ],
+            [
                 'route' => 'admin.category.index',
                 'active' => 'admin.category*',
                 'label' => 'Categorias',

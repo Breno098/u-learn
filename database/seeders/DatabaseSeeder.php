@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             // PartnerSeeder::class,
             // CampaignSeeder::class,
             CommonQuestionSeeder::class,
+            CertificateSeeder::class
             // ProductSeeder::class,
             // OrderSeeder::class,
             // ItemSeeder::class,

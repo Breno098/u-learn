@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SectionFactory extends Factory
+class CertificateFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,6 +15,7 @@ class SectionFactory extends Factory
     {
         return [
             'name' => fake()->name,
+            'image' => \App\Helpers\Seeder\Random::image()
         ];
     }
 }
