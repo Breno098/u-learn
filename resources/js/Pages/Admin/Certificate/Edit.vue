@@ -2,6 +2,7 @@
     import AuthenticatedLayout from '@/Layouts/Admin/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/inertia-vue3';
     import { useQuasar } from 'quasar'
+    import { useDropzone } from "vue3-dropzone";
     import AdminDialog from '@/Components/AdminDialog.vue';
 
     const $q = useQuasar()
@@ -14,6 +15,7 @@
     const form = useForm({
         id: props.certificate.id,
         name: props.certificate.name,
+        image: props.certificate.image,
     });
 
     const submit = () => {
@@ -54,6 +56,24 @@
             })
         });
     }
+
+    const srcImage = (field) => {
+        return field == null ? '' : (typeof field === 'object') ? URL.createObjectURL(field) : field;
+    }
+    const dropZoneImage = useDropzone({
+        onDrop: (acceptFiles, rejectReasons) => {
+            if (rejectReasons.length > 0) {
+                $q.notify({ message: 'Insira apenas uma imagem', position: 'center' })
+            } else {
+                form.image = acceptFiles[0];
+            }
+        },
+        accept: ['image/*'],
+        maxFiles: 1
+    });
+
+    const removeImage = () => form.image = null;
+
 </script>
 
 <template>
@@ -114,6 +134,63 @@
                                 <div class="text-red"> {{ errors.name }} </div>
                             </template>
                         </q-input>
+                    </div>
+
+                    <div class="col-12 items-center">
+                        <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
+                            Imagem
+                        </div>
+                    </div>
+
+                    <div class="col-12" v-if="form.image">
+                        <q-img
+                            :src="srcImage(form.image)"
+                            style="height: 400px"
+                            class="adm-br-5"
+                        >
+                            <div class="absolute-bottom text-subtitle2 row items-center">
+                                <q-btn
+                                    color="indigo"
+                                    class="absolute inset-shadow-down"
+                                    icon="insert_link"
+                                    v-bind="dropZoneImage.getRootProps()"
+                                    style="top: 0; right: 80px; transform: translateY(-50%);"
+                                >
+                                    <q-tooltip>
+                                        Clique para alterar imagem
+                                    </q-tooltip>
+                                </q-btn>
+
+                                <q-btn
+                                    color="red"
+                                    class="absolute inset-shadow-down"
+                                    icon="o_hide_image"
+                                    @click="removeImage"
+                                    style="top: 0; right: 12px; transform: translateY(-50%);"
+                                >
+                                    <q-tooltip>
+                                        Clique para remover imagem
+                                    </q-tooltip>
+                                </q-btn>
+
+                                <input v-bind="dropZoneImage.getInputProps()"/>
+                            </div>
+                        </q-img>
+                    </div>
+
+                    <div class="col-12" v-else>
+                        <div
+                            v-bind="dropZoneImage.getRootProps()"
+                            class="column flex-center q-py-lg text-grey adm-border-dashed-indigo adm-br-5"
+                        >
+                            <input v-bind="dropZoneImage.getInputProps()"/>
+
+                            <q-icon name="o_photo" size="md"/>
+
+                            <div class="q-mt-sm">
+                                Clique aqui ou arraste sua imagem
+                            </div>
+                        </div>
                     </div>
                 </div>
             </q-card-section>
