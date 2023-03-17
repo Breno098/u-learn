@@ -4,7 +4,7 @@
     import { useQuasar } from 'quasar'
     import { useDropzone } from "vue3-dropzone";
     import AdminDialog from '@/Components/AdminDialog.vue';
-    import CanvasElement from '@/Components/Canvas/CanvasElement.vue';
+    import DrawElement from '@/Components/DrawElement.vue';
 
     const $q = useQuasar()
 
@@ -78,10 +78,12 @@
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <Head :title="certificate.name" />
+    <Head :title="certificate.name" />
 
-        <q-card flat class="q-mb-lg">
+    <AuthenticatedLayout>
+        <draw-element/>
+
+        <!-- <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
                 <div class="flex col-12 col-md-6 justify-start items-center">
                     <q-icon name="card_membership" color="indigo" size="md"/>
@@ -112,9 +114,9 @@
                     />
                 </div>
             </q-card-section>
-        </q-card>
+        </q-card> -->
 
-        <q-card flat>
+        <!-- <q-card flat>
             <q-card-section class="q-pb-none q-py-lg">
                 <div class="row q-col-gutter-lg">
                     <div class="col-12 items-center">
@@ -138,13 +140,10 @@
                     </div>
 
                     <div class="col-12 col-md-12">
-                        <canvas-element
-                            :position="{ x: 10, y: 10 }"
-                            :image="srcImage(form.image)"
-                         />
+                        <draw-element/>
                     </div>
 
-                    <!-- <div class="col-12 items-center">
+                    <div class="col-12 items-center">
                         <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
                             Imagem
                         </div>
@@ -199,9 +198,9 @@
                                 Clique aqui ou arraste sua imagem
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </q-card-section>
-        </q-card>
+        </q-card> -->
     </AuthenticatedLayout>
 </template>
