@@ -4,6 +4,7 @@
     import { useQuasar } from 'quasar'
     import { useDropzone } from "vue3-dropzone";
     import AdminDialog from '@/Components/AdminDialog.vue';
+    import CanvasElement from '@/Components/Canvas/CanvasElement.vue';
 
     const $q = useQuasar()
 
@@ -136,7 +137,14 @@
                         </q-input>
                     </div>
 
-                    <div class="col-12 items-center">
+                    <div class="col-12 col-md-12">
+                        <canvas-element
+                            :position="{ x: 10, y: 10 }"
+                            :image="srcImage(form.image)"
+                         />
+                    </div>
+
+                    <!-- <div class="col-12 items-center">
                         <div class="q-ml-sm text-blue-grey-10 adm-fs-23">
                             Imagem
                         </div>
@@ -191,7 +199,7 @@
                                 Clique aqui ou arraste sua imagem
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </q-card-section>
         </q-card>
