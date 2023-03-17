@@ -17,12 +17,10 @@ class CreateLessonsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('number')->default(1);
             $table->time('duration')->nullable();
             $table->string('wallpaper')->nullable();
             $table->string('video')->nullable();
             $table->boolean('can_comments')->default(true);
-            $table->foreignId('module_id')->constrained();
             $table->timestamps();
         });
     }

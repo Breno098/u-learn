@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Exam;
 use App\Models\Genre;
 use App\Models\Lesson;
 use App\Models\Module;
@@ -28,8 +29,15 @@ class CourseSeeder extends Seeder
                         'number' => $number,
                     ])->toArray());
 
-                    foreach (range(1, 5) as $_number) {
-                        $module->lessons()->create(Lesson::factory()->make(['number' => $_number])->toArray());
+                    $number = 1;
+                    foreach (Lesson::all()->random(2) as $lesson) {
+                        $module->lessons()->attach($lesson, ['number' => $number++]);
+                    }
+
+                    $module->exams()->attach(Exam::all()->random(), ['number' => $number++]);
+
+                    foreach (Lesson::all()->random(3) as $lesson) {
+                        $module->lessons()->attach($lesson, ['number' => $number++]);
                     }
                 }
             });

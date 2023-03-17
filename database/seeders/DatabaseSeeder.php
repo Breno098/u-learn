@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
             CategorySeeder::class,
             GenreSeeder::class,
+            LessonSeeder::class,
+            ExamSeeder::class,
             CourseSeeder::class,
             // LiveEventSeeder::class,
             // MeetingSeeder::class,

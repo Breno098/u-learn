@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * @property int|null $id
@@ -15,8 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $wallpaper
  * @property string $video
  * @property boolean $can_comments
- * @property Module $module
- * @property Course $course
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -50,10 +49,10 @@ class Lesson extends Model
     ];
 
     /**
-     * @return Module|BelongsTo
+     * @return Module[]|MorphToMany
      */
-    public function module(): Module|BelongsTo
+    public function modules(): MorphToMany
     {
-        return $this->belongsTo(Module::class);
+        return $this->morphToMany(Module::class, 'itemable');
     }
 }

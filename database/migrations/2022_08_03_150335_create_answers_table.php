@@ -15,15 +15,15 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->string('answer')->nullable();
-            $table->string('correct_answer')->nullable();
-            $table->boolean('is_correct')->nullable();
-            $table->foreignId('question_id')->constrained();
-            $table->foreignId('alternative_selected_id')->nullable()->constrained('alternatives');
-            $table->foreignId('order_id')->constrained();
-            $table->foreignId('quizz_id')->constrained('quizzes');
-            $table->integer('attemp')->default(1);
-            $table->longText('answer_text')->nullable();
+            // $table->string('answer')->nullable();
+            // $table->string('correct_answer')->nullable();
+            // $table->boolean('is_correct')->nullable();
+            // $table->foreignId('question_id')->constrained();
+            // $table->foreignId('alternative_selected_id')->nullable()->constrained('alternatives');
+            // $table->foreignId('order_id')->constrained();
+            // $table->foreignId('quizz_id')->constrained('quizzes');
+            // $table->integer('attemp')->default(1);
+            // $table->longText('answer_text')->nullable();
             $table->timestamps();
         });
     }

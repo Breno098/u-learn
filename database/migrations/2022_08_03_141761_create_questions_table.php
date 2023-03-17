@@ -17,7 +17,7 @@ class CreateQuestionsTable extends Migration
             $table->id();
             $table->string('title');
             $table->enum('answer_type', ['aberta', 'fechada', 'imagem', 'video', 'audio']);
-            $table->foreignId('quizz_id')->constrained('quizzes');
+            $table->foreignId('exam_id')->constrained();
             $table->integer('number')->default(1);
             $table->string('video')->nullable();
             $table->string('audio')->nullable();

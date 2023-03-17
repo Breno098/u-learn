@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChapterQuizzTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateChapterQuizzTable extends Migration
      */
     public function up()
     {
-        Schema::create('chaper_quizz', function (Blueprint $table) {
+        Schema::create('itemables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lesson_id')->constrained();
-            // $table->foreignId('quizz_id')->constrained('quizzes');
+            $table->foreignId('module_id')->constrained();
+            $table->morphs('itemable');
+            $table->integer('number')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateChapterQuizzTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chapter_quizz');
+        Schema::dropIfExists('item_module');
     }
-}
+};

@@ -58,6 +58,12 @@ class ModuleController extends Controller
      */
     public function edit(Course $course, Module $module): Response
     {
+        dd(
+            $module->lessons,
+            $module->exams,
+            $module->allItems()
+        );
+
         return inertia('Admin/Course/Module/Edit', [
             'course' => new CourseResource($course),
             'module' => new ModuleResource($module),
