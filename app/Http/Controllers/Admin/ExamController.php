@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AnswerTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Lesson\LessonStoreRequest;
 use App\Http\Requests\Admin\Lesson\LessonUpdateRequest;
 use App\Http\Resources\Admin\CourseResource;
-use App\Http\Resources\Admin\LessonResource;
+use App\Http\Resources\Admin\ExamResource;
 use App\Http\Resources\Admin\ModuleResource;
 use App\Models\Course;
+use App\Models\Exam;
 use App\Models\Lesson;
 use App\Models\Module;
-use App\Services\Admin\LessonService;
+use App\Services\Admin\ExamService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response;
 
-class LessonController extends Controller
+class ExamController extends Controller
 {
     /**
-     * @var LessonService
+     * @var examService
      */
-    protected LessonService $lessonService;
+    protected ExamService $examService;
 
     /**
-     * @param LessonService $lessonService
+     * @param ExamService $examService
      */
-    public function __construct(LessonService $lessonService)
+    public function __construct(ExamService $examService)
     {
-        $this->lessonService = $lessonService;
+        $this->examService = $examService;
     }
 
     /**
@@ -36,7 +38,7 @@ class LessonController extends Controller
      */
     public function create(Module $module): Response
     {
-        return inertia('Admin/Course/Module/Lesson/Create', [
+        return inertia('Admin/Course/Module/Exam/Create', [
             'course' => new CourseResource($module->course),
             'module' => new ModuleResource($module),
         ]);
@@ -44,15 +46,16 @@ class LessonController extends Controller
 
     /**
      * @param Module $module
-     * @param Lesson $lesson
+     * @param Exam $exam
      * @return Response
      */
-    public function edit(Module $module, Lesson $lesson): Response
+    public function edit(Module $module, Exam $exam): Response
     {
-        return inertia('Admin/Course/Module/Lesson/Edit', [
+        return inertia('Admin/Course/Module/Exam/Edit', [
             'course' => new CourseResource($module->course),
             'module' => new ModuleResource($module),
-            'lesson' => new LessonResource($lesson)
+            'exam' => new ExamResource($exam),
+            'answerTypes' => AnswerTypeEnum::toArray(),
         ]);
     }
 
@@ -63,7 +66,7 @@ class LessonController extends Controller
      */
     public function store(LessonStoreRequest $lessonStoreRequest, Module $module): RedirectResponse
     {
-        $this->lessonService->store($module, $lessonStoreRequest->validated());
+        $this->examService->store($module, $lessonStoreRequest->validated());
 
         return redirect()->route('admin.course.module.index', $module->course);
     }
@@ -76,7 +79,7 @@ class LessonController extends Controller
      */
     public function update(LessonUpdateRequest $lessonUpdateRequest, Module $module, Lesson $lesson): RedirectResponse
     {
-        $this->lessonService->update($module, $lesson, $lessonUpdateRequest->validated());
+        $this->examService->update($module, $lesson, $lessonUpdateRequest->validated());
 
         return redirect()->route('admin.course.module.index', $module->course);
     }
@@ -89,10 +92,10 @@ class LessonController extends Controller
      */
     public function destroy(Module $module, Lesson $lesson): RedirectResponse
     {
-        $deleted = $this->lessonService->delete($lesson);
+        $deleted = $this->examService->delete($lesson);
 
         if ($deleted) {
-            $this->lessonService->reorder($module, $module->lessons->toArray());
+            $this->examService->reorder($module, $module->lessons->toArray());
         }
 
         return redirect()->route('admin.course.module.index', $module->course);

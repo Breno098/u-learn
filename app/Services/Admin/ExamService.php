@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
-class LessonService
+class ExamService
 {
     /**
      * @param array $requestData

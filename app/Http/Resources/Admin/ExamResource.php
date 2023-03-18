@@ -42,19 +42,9 @@ class ExamResource extends JsonResource
                     'name' => $alternative->name
                 ])
             ]),
-
             /** Pivot Relation */
             'number' => $this->whenNotNull($exam->number),
             'type' => $this->whenNotNull($exam->type),
-
-            // 'course_id' => $exam->course_id,
-            // 'content' => [
-            //     'id' => $exam->content->id,
-            //     'name' => $exam->content->name,
-            //     'has_seasons' => $exam->content->has_seasons
-            // ],
-            // 'linkable_type'=> $exam->getLinkableTypeParse(),
-            // 'linkable_id'=> $exam->linkable_id,
         ];
     }
 }

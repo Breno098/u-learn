@@ -98,13 +98,11 @@
         modulesDrag.value = props.modules;
     }
 
-    const createLesson = (_module) =>  useForm().get(route('admin.course.module.lesson.create', {
-        course: props.course.id,
+    const createLesson = (_module) =>  useForm().get(route('admin.module.lesson.create', {
         module: _module.id,
     }));
 
-    const editLesson = (lesson, _module) =>  useForm().get(route('admin.course.module.lesson.edit', {
-        course: props.course.id,
+    const editLesson = (lesson, _module) =>  useForm().get(route('admin.module.lesson.edit', {
         module: _module.id,
         lesson: lesson.id
     }));
@@ -119,8 +117,7 @@
                 icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
-            useForm().delete(route('admin.course.module.lesson.destroy', {
-                course: props.course.id,
+            useForm().delete(route('admin.module.lesson.destroy', {
                 module: _module.id,
                 lesson: lesson.id
             }), {
@@ -141,6 +138,13 @@
             })
         });
     }
+
+    const editExam = (exam, _module) =>  useForm().get(route('admin.module.exam.edit', {
+        module: _module.id,
+        exam: exam.id
+    }));
+
+    const handleEditItem = (item, _module) => item.type === 'lesson' ? editLesson(item, _module) : editExam(item, _module)
 
     const canDragLessons = ref(false)
 </script>
@@ -391,7 +395,7 @@
                                                                         <q-item
                                                                             clickable
                                                                             class="text-blue-grey-10 flex items-center"
-                                                                            @click="editLesson(item, moduleData)"
+                                                                            @click="handleEditItem(item, moduleData)"
                                                                         >
                                                                             <q-icon name="edit" size="xs" color="indigo" />
 

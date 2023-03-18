@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\CommonQuestionController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ItemController;
@@ -117,7 +118,8 @@ Route::middleware('auth:admin')
         Route::resource('course.module', ModuleController::class);
         Route::post('course/{course}/module/reorder', [ModuleController::class, 'reorder'])->name('course.module.reorder');
 
-        Route::resource('course.module.lesson', LessonController::class);
+        Route::resource('module.lesson', LessonController::class);
+        Route::resource('module.exam', ExamController::class);
 
         Route::resource('quizz', QuizzController::class);
         Route::post('quizz/destroy-multiples', [QuizzController::class, 'destroyMultiples'])->name('quizz.destroy-multiples');
