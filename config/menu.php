@@ -69,6 +69,13 @@ return [
                 'can' => 'course_index'
             ],
             [
+                'route' => 'admin.module.index',
+                'active' => 'admin.module*',
+                'label' => 'Módulos',
+                'icon' => 'o_view_agenda',
+                // 'can' => 'module_index'
+            ],
+            [
                 'route' => 'admin.certificate.index',
                 'active' => 'admin.certificate*',
                 'label' => 'Certificados',

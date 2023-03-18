@@ -8,13 +8,13 @@
     const $q = useQuasar()
 
     const props = defineProps({
-        courses: Object,
+        modules: Object,
         errors: Object,
         query: Object,
 
-        canCourseStore: Boolean,
-        canCourseEdit: Boolean,
-        canCourseDestroy: Boolean,
+        canModuleStore: Boolean,
+        canModuleEdit: Boolean,
+        canModuleDestroy: Boolean,
     });
 
     const columns = [{
@@ -22,13 +22,7 @@
         align: 'left',
         label: 'Nome',
         field: 'name',
-        style: 'width: 50%',
-    }, {
-        name: 'category_name',
-        align: 'left',
-        label: 'Categoria',
-        field: course => course.category.name,
-        style: 'width: 50%',
+        style: 'width: 100%',
     }, {
         name: 'actions',
     }];
@@ -62,35 +56,35 @@
     }
 
     const submit = () => {
-        requestData.get(route('admin.course.index'), {
+        requestData.get(route('admin.module.index'), {
             preserveState: true,
             preserveScroll: true,
             onSuccess: () => showFilters.value = false,
         });
     }
 
-    const create = () => useForm().get(route('admin.course.create'));
+    const create = () => useForm().get(route('admin.module.create'));
 
-    const edit = (id) => useForm().get(route('admin.course.edit', id));
+    const edit = (id) => useForm().get(route('admin.module.edit', id));
 
     const destroy = (id) => {
         $q.dialog({
             component: AdminDialog,
             componentProps: {
-                title: 'Excluir curso',
-                message: 'Tem certeza que deseja excluir essa curso?',
+                title: 'Excluir módulo',
+                message: 'Tem certeza que deseja excluir esse módulo?',
                 confirm: true,
                 icon: { name: 'close', color: 'red' },
             },
         }).onOk(() => {
-            useForm().delete(route('admin.course.destroy', id), {
+            useForm().delete(route('admin.module.destroy', id), {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => {
                     $q.dialog({
                         component: AdminDialog,
                         componentProps: {
-                            message: 'Curso excluído com sucesso',
+                            message: 'Módulo excluído com sucesso',
                             icon: { name: 'check', color: 'green' },
                             timeout: 3000
                         }
@@ -105,19 +99,19 @@
             component: AdminDialog,
             componentProps: {
                 title: 'Excluir selecionados',
-                message: 'Tem certeza que deseja excluir cursos selecionadas?',
+                message: 'Tem certeza que deseja excluir módulos selecionadas?',
                 confirm: true,
                 icon: { name: 'playlist_remove', color: 'red' }
             },
       }).onOk(() => {
-        useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.course.destroy-multiples'), {
+        useForm({ ids: selected.value.map(s => s.id) }).post(route('admin.module.destroy-multiples'), {
             onSuccess: () => {
                 selected.value = [];
 
                 $q.dialog({
                     component: AdminDialog,
                     componentProps: {
-                        message: 'Cursos excluídos com sucesso',
+                        message: 'Modulos excluídos com sucesso',
                         icon: { name: 'playlist_add_check', color: 'green' },
                         timeout: 3000
                     }
@@ -131,11 +125,11 @@
 
     const showFilters = ref(false)
 
-    const clearFilters = () => useForm().get(route('admin.course.index'))
+    const clearFilters = () => useForm().get(route('admin.module.index'))
 </script>
 
 <template>
-    <Head title="Cursos" />
+    <Head title="Módulos" />
 
     <AuthenticatedLayout>
         <q-card flat class="q-mb-lg">
@@ -143,7 +137,7 @@
                 <div class="flex col-12 col-md-6 justify-start items-center">
                     <q-icon name="o_school" color="indigo" size="md"/>
 
-                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md"> Cursos </div>
+                    <div class="adm-fs-28 text-blue-grey-10 q-ml-md"> Módulos </div>
                 </div>
 
                 <div class="col-12 col-md-6 flex justify-end items-center">
@@ -163,7 +157,7 @@
                         no-caps
                         @click="create"
                         icon="add"
-                        label="Novo curso"
+                        label="Novo módulo"
                     />
                 </div>
             </q-card-section>
@@ -194,7 +188,7 @@
                         <q-input
                             outlined
                             v-model="requestData.filters.name"
-                            label="Nome do curso"
+                            label="Nome"
                             color="indigo"
                             @keydown.enter.prevent="submit"
                         />
@@ -249,7 +243,7 @@
                 </q-chip>
 
                 <q-table
-                    :rows="courses.data"
+                    :rows="modules.data"
                     :columns="columns"
                     flat
                     class="text-blue-grey-10"
@@ -298,11 +292,11 @@
                     <template v-slot:body-cell-actions="props">
                         <q-td :props="props">
                             <div class="row items-center justify-center adm-fw-700 adm-fs-16">
-                                <q-btn icon="more_vert" flat v-if="canCourseEdit || canCourseDestroy">
+                                <q-btn icon="more_vert" flat v-if="canModuleEdit || canModuleDestroy">
                                     <q-menu :offset="[45, 0]">
                                         <q-list>
                                             <q-item
-                                                v-if="canCourseEdit"
+                                                v-if="canModuleEdit"
                                                 clickable
                                                 @click="edit(props.row.id)"
                                                 class="text-blue-grey-10 flex items-center"
@@ -317,7 +311,7 @@
                                             <q-separator/>
 
                                             <q-item
-                                                v-if="canCourseDestroy"
+                                                v-if="canModuleDestroy"
                                                 clickable
                                                 @click="destroy(props.row.id)"
                                                 class="text-blue-grey-10 flex flex-center"
@@ -353,7 +347,7 @@
 
                     <q-pagination
                         v-model="requestData.page"
-                        :max="courses.meta.last_page"
+                        :max="modules.meta.last_page"
                         @update:model-value="submit"
                         direction-links
                         boundary-links
