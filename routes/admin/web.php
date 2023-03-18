@@ -114,8 +114,8 @@ Route::middleware('auth:admin')
         Route::resource('course', CourseController::class);
         Route::post('course/destroy-multiples', [CourseController::class, 'destroyMultiples'])->name('course.destroy-multiples');
 
-        Route::resource('module', ModuleController::class);
-        // Route::post('course/{course}/module/reorder', [ModuleController::class, 'reorder'])->name('course.module.reorder');
+        Route::resource('course.module', ModuleController::class);
+        Route::post('course/{course}/module/reorder', [ModuleController::class, 'reorder'])->name('course.module.reorder');
 
         Route::resource('course.module.lesson', LessonController::class);
 

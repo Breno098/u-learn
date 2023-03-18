@@ -25,6 +25,7 @@
         style: 'width: 100%',
     }, {
         name: 'actions',
+        label: 'Ação',
     }];
 
     const requestData = useForm({
@@ -283,6 +284,14 @@
                                     :name="query.sort == 'desc' ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
                                     v-if="props.col.name === query.orderBy"
                                 />
+                            </div>
+                        </q-th>
+                    </template>
+
+                    <template v-slot:header-cell-actions="props">
+                        <q-th :props="props" auto-width>
+                            <div class="flex flex-center adm-fw-700 adm-fs-16">
+                                {{  props.col.label  }}
                             </div>
                         </q-th>
                     </template>

@@ -2,53 +2,24 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Exam;
+use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Module;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class ModuleService
 {
-     /**
-     * @param array $filters
-     * @param null|integer $rowsPerPage
-     * @param null|string $orderBy
-     * @param null|string $sort
-     * @return Student[]|Collection|LengthAwarePaginator
-     */
-    public function index(
-        array $filters = [],
-        null|int $rowsPerPage = 10,
-        null|string $orderBy = 'id',
-        null|string $sort = 'asc'
-    ): LengthAwarePaginator|Collection
-    {
-         /** @var Module|Builder */
-        $query = Module::query()->select(['modules.*']);
-
-        if ($name = Arr::get($filters, 'name')) {
-            $query->where('name', 'like', "%{$name}%");
-        }
-
-        if (in_array($orderBy, (new Module)->getFillable())) {
-            $query->orderBy("modules.{$orderBy}", $sort);
-        }
-
-        return $query->paginate($rowsPerPage);
-    }
-
     /**
+     * @param Course $course
      * @param array $requestData
      * @return Module
      */
-    public function store(array $requestData = []): Module
+    public function store(Course $course, array $requestData = []): Module
     {
-        $module = Module::create($this->transform($requestData));
+        $module = $course->modules()->create($this->transform($requestData, $course));
 
         $this->uploadImage($module, Arr::get($requestData, 'image'));
 
@@ -56,13 +27,14 @@ class ModuleService
     }
 
      /**
+     * @param Course $course
      * @param Module $module
      * @param array $requestData
      * @return Module
      */
-    public function update(Module $module, array $requestData = []): Module
+    public function update(Course $course, Module $module, array $requestData = []): Module
     {
-        $module->update($this->transform($requestData));
+        $course->modules()->find($module->id)->update($this->transform($requestData));
 
         $this->uploadImage($module, Arr::get($requestData, 'image'));
 
@@ -70,31 +42,40 @@ class ModuleService
     }
 
     /**
+     * @param Course $course
      * @param Module $module
      * @return bool|null
      */
-    public function delete(Module $module): bool|null
+    public function delete(Course $course, Module $module): bool|null
     {
-        /** @var LessonService $lessonService */
-        $lessonService= app(LessonService::class);
+        /** @var Module */
+        $module = $course->modules()->find($module->id);
 
-        $module->lessons()->get()->map(fn(Lesson $lesson) => $lessonService->delete($lesson));
-        /** @todo Adicionar serviço de exams */$module->exams()->get()->map(fn(Exam $exam) => $exam->delete());
+        if ($module) {
+            /** @var LessonService $lessonService */
+            $lessonService= app(LessonService::class);
 
-        $this->deleteImage($module);
+            $module->lessons()->get()->map(fn(Lesson $lesson) => $lessonService->delete($lesson));
 
-        return $module->delete();
+            $this->deleteImage($module);
+
+            return $module->delete();
+        }
+
+        return false;
     }
 
     /**
      * @param array $requestData
+     * @param null|Course $course
      * @return array
      */
-    private function transform(array $requestData): array
+    private function transform(array $requestData, null|Course $course = null): array
     {
         return [
             'name' => Arr::get($requestData, 'name'),
             'description' => Arr::get($requestData, 'description'),
+            'number' => Arr::get($requestData, 'number', $course && $course->modules->isNotEmpty() ? $course->modules->last()->number + 1 : 1)
         ];
     }
 
@@ -139,19 +120,19 @@ class ModuleService
         }
     }
 
-    // /**
-    //  * @param Course $course
-    //  * @param array $newPositions
-    //  * @return void
-    //  */
-    // public function reorder(Course $course, array $newPositions = []): void
-    // {
-    //     foreach ($newPositions as $key => $dataPosition) {
-    //         if ($id = Arr::get($dataPosition,'id')) {
-    //             /** @var Module */
-    //             $module = $course->modules()->find($id);
-    //             $module->update(['number' => $key + 1]);
-    //         }
-    //     }
-    // }
+    /**
+     * @param Course $course
+     * @param array $newPositions
+     * @return void
+     */
+    public function reorder(Course $course, array $newPositions = []): void
+    {
+        foreach ($newPositions as $key => $dataPosition) {
+            if ($id = Arr::get($dataPosition,'id')) {
+                /** @var Module */
+                $module = $course->modules()->find($id);
+                $module->update(['number' => $key + 1]);
+            }
+        }
+    }
 }

@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helpers\Acess\Authorize;
-use App\Helpers\Http\DataQuery;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Module\ModuleIndexRequest;
 use App\Http\Requests\Admin\Module\ModuleStoreRequest;
 use App\Http\Requests\Admin\Module\ModuleUpdateRequest;
+use App\Http\Resources\Admin\CourseResource;
 use App\Http\Resources\Admin\ModuleResource;
 use App\Models\Course;
 use App\Models\Module;
 use App\Services\Admin\ModuleService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Response;
 
 class ModuleController extends Controller
@@ -30,100 +29,96 @@ class ModuleController extends Controller
         $this->moduleService = $moduleService;
     }
 
-    /**
-     * @param ModuleIndexRequest $request
+     /**
+     * @param Course $course
      * @return Response
      */
-    public function index(ModuleIndexRequest $request): Response
+    public function index(Course $course): Response
     {
-        $dataQuery = new DataQuery($request);
-
-        $modules = $this->moduleService->index(
-            $dataQuery->filters(),
-            $dataQuery->rowsPerPage(),
-            $dataQuery->orderBy('name'),
-            $dataQuery->sort()
-        );
-
-        return inertia('Admin/Module/Index', [
-            'modules' => ModuleResource::collection($modules),
-            'query' => $dataQuery->query(),
-
-            'canModuleStore' => true || Authorize::any('module_store'),
-            'canModuleEdit' => true || Authorize::any('module_update'),
-            'canModuleDestroy' => true || Authorize::any('module_destroy'),
+        return inertia('Admin/Course/Module/Index', [
+            'course' => new CourseResource($course),
+            'modules' => ModuleResource::collection($course->modules)
         ]);
     }
 
     /**
+     * @param Course $course
      * @return Response
      */
-    public function create(): Response
+    public function create(Course $course): Response
     {
-        return inertia('Admin/Module/Create');
+        return inertia('Admin/Course/Module/Create', [
+            'course' => new CourseResource($course),
+        ]);
     }
 
     /**
+     * @param Course $course
      * @return Response
      */
-    public function edit(Module $module): Response
+    public function edit(Course $course, Module $module): Response
     {
-        return inertia('Admin/Module/Edit', [
+        return inertia('Admin/Course/Module/Edit', [
+            'course' => new CourseResource($course),
             'module' => new ModuleResource($module),
         ]);
     }
 
     /**
      * @param ModuleStoreRequest $moduleStoreRequest
+     * @param Course $course
      * @return RedirectResponse
      */
-    public function store(ModuleStoreRequest $moduleStoreRequest): RedirectResponse
+    public function store(ModuleStoreRequest $moduleStoreRequest, Course $course): RedirectResponse
     {
-        $this->moduleService->store($moduleStoreRequest->validated());
+        $this->moduleService->store($course, $moduleStoreRequest->validated());
 
-        return redirect()->route('admin.module.index');
+        return redirect()->route('admin.course.module.index', $course);
     }
 
     /**
      * @param ModuleUpdateRequest $moduleUpdateRequest
+     * @param Course $course
      * @param Module $module
      * @return RedirectResponse
      */
-    public function update(ModuleUpdateRequest $moduleUpdateRequest, Module $module): RedirectResponse
+    public function update(ModuleUpdateRequest $moduleUpdateRequest, Course $course, Module $module): RedirectResponse
     {
-        $this->moduleService->update($module, $moduleUpdateRequest->validated());
+        $this->moduleService->update($course, $module, $moduleUpdateRequest->validated());
 
-        return redirect()->route('admin.module.index');
+        return redirect()->route('admin.course.module.index', $course);
     }
 
     /**
+     * @param Course $course
      * @param Module $module
      * @return RedirectResponse
      */
-    public function destroy(Module $module): RedirectResponse
+    public function destroy(Course $course, Module $module): RedirectResponse
     {
-        $deleted = $this->moduleService->delete($module);
+        $deleted = $this->moduleService->delete($course, $module);
 
-        // if ($deleted) {
-        //     $this->moduleService->reorder($course, $course->modules->toArray());
-        // }
+        if ($deleted) {
+            $this->moduleService->reorder($course, $course->modules->toArray());
+        }
 
-        return redirect()->route('admin.module.index');
+        return redirect()->route('admin.course.module.index', $course);
     }
 
-    // /**
-    //  * @param Request $request
-    //  * @return RedirectResponse
-    //  */
-    // public function reorder(Course $course, Request $request): RedirectResponse
-    // {
-    //     $request->validate([
-    //         'modules' => 'required|array',
-    //         'modules.*.id' => 'required|exists:modules,id',
-    //     ]);
+    /**
+     * @param Course $course
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function reorder(Course $course, Request $request): RedirectResponse
+    {
+        $request->validate([
+            'modules' => 'required|array',
+            'modules.*.id' => 'required|exists:modules,id',
+        ]);
 
-    //     $this->moduleService->reorder($course, $request->get('modules', []));
+        $this->moduleService->reorder($course, $request->get('modules', []));
 
-    //     return redirect()->route('admin.course.module.index', $course);
-    // }
+        return redirect()->route('admin.course.module.index', $course);
+    }
 }
