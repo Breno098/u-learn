@@ -4,10 +4,10 @@ namespace App\Http\Resources\Admin;
 
 use App\Models\Alternative;
 use App\Models\Question;
-use App\Models\Quizz;
+use App\Models\Exam;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QuizzResource extends JsonResource
+class ExamResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,17 +17,16 @@ class QuizzResource extends JsonResource
      */
     public function toArray($request)
     {
-        /** @var Quizz */
-        $quizz = $this->resource;
+        /** @var Exam */
+        $exam = $this->resource;
 
         return [
-            'id' => $quizz->id,
-            'name' => $quizz->name,
-            'description' => $quizz->description,
-            'attempts' => $quizz->attempts,
-            'answer_file' => $quizz->answer_file,
-
-            'questions' => $quizz->questions->map(fn (Question $question) => [
+            'id' => $exam->id,
+            'name' => $exam->name,
+            'description' => $exam->description,
+            'attempts' => $exam->attempts,
+            'answer_file' => $exam->answer_file,
+            'questions' => $exam->questions->map(fn (Question $question) => [
                 'id' => $question->id,
                 'title' => $question->title,
                 'text' => $question->text,
@@ -43,14 +42,19 @@ class QuizzResource extends JsonResource
                     'name' => $alternative->name
                 ])
             ]),
-            'course_id' => $quizz->course_id,
-            'content' => [
-                'id' => $quizz->content->id,
-                'name' => $quizz->content->name,
-                'has_seasons' => $quizz->content->has_seasons
-            ],
-            'linkable_type'=> $quizz->getLinkableTypeParse(),
-            'linkable_id'=> $quizz->linkable_id,
+
+            /** Pivot Relation */
+            'number' => $this->whenNotNull($exam->number),
+            'type' => $this->whenNotNull($exam->type),
+
+            // 'course_id' => $exam->course_id,
+            // 'content' => [
+            //     'id' => $exam->content->id,
+            //     'name' => $exam->content->name,
+            //     'has_seasons' => $exam->content->has_seasons
+            // ],
+            // 'linkable_type'=> $exam->getLinkableTypeParse(),
+            // 'linkable_id'=> $exam->linkable_id,
         ];
     }
 }

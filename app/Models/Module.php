@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection;
 
 /**
  * @property int|null $id
@@ -17,8 +15,9 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property string $image
  * @property string $description
  * @property Course $course
- * @property Lesson[]|Collection|MorphToMany $lessons
- * @property Exam[]|Collection|MorphToMany $exams
+ * @property Lesson[]|\Illuminate\Database\Eloquent\Collection|MorphToMany $lessons
+ * @property Exam[]|\Illuminate\Database\Eloquent\Collection|MorphToMany $exams
+ * @property-read Lesson[]|Exam[]|Collection $all_items
  */
 class Module extends Model
 {
@@ -57,26 +56,35 @@ class Module extends Model
     }
 
     /**
-     * @return Lesson[]|MorphToMany|Collection
+     * @return Lesson[]|MorphToMany|\Illuminate\Database\Eloquent\Collection
      */
-    public function lessons(): MorphToMany|Collection
+    public function lessons(): MorphToMany|\Illuminate\Database\Eloquent\Collection
     {
-        return $this->morphedByMany(Lesson::class, 'itemable')->withPivot('number')->orderByPivot('number');
+        return $this->morphedByMany(Lesson::class, 'itemable')->withPivot([
+            'number as number',
+            "itemable_type as type"
+        ])->orderByPivot('number');
     }
 
     /**
-     * @return Exam[]|MorphToMany|Collection
+     * @return Exam[]|MorphToMany|\Illuminate\Database\Eloquent\Collection
      */
-    public function exams(): MorphToMany|Collection
+    public function exams(): MorphToMany|\Illuminate\Database\Eloquent\Collection
     {
-        return $this->morphedByMany(Exam::class, 'itemable')->withPivot('number')->orderByPivot('number');
+        return $this->morphedByMany(Exam::class, 'itemable')->withPivot([
+            'number as number',
+            "itemable_type as type"
+        ])->orderByPivot('number');
     }
 
     /**
-     * @return Lesson[]|Exam[]|MorphToMany|Collection
+     * Attributes
      */
-    public function allItems()
+    /**
+     * @return Lesson[]|Exam[]|Collection
+     */
+    public function getAllItemsAttribute(): Collection
     {
-        return collect($this->lessons)->concat($this->exams)->sortBy('pivot_number');
+        return collect($this->lessons)->concat($this->exams)->sortBy('number');
     }
 }

@@ -66,9 +66,9 @@
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <Head title="Novo módulo" />
+    <Head title="Novo módulo" />
 
+    <AuthenticatedLayout>
         <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
                 <div class="flex col-12 col-md-9 justify-start items-center">

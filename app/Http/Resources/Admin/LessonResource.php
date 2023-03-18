@@ -21,12 +21,15 @@ class LessonResource extends JsonResource
         return [
             'id' => $lesson->id,
             'name' => $lesson->name,
-            'number' => $lesson->number,
             'description' => $lesson->description,
             'duration' => $lesson->duration ? $lesson->duration->format('H:s') : null,
             'wallpaper' => $lesson->wallpaper,
             'video' => $lesson->video,
             'can_comments' => $lesson->can_comments,
+
+            /** Pivot Relation */
+            'number' => $this->whenNotNull($lesson->number),
+            'type' => $this->whenNotNull($lesson->type),
         ];
     }
 }
