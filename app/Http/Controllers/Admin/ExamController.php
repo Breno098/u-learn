@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\AnswerTypeEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Exam\ExamStoreRequest;
+use App\Http\Requests\Admin\Exam\ExamUpdateRequest;
 use App\Http\Requests\Admin\Lesson\LessonStoreRequest;
 use App\Http\Requests\Admin\Lesson\LessonUpdateRequest;
 use App\Http\Resources\Admin\CourseResource;
@@ -60,26 +62,26 @@ class ExamController extends Controller
     }
 
     /**
-     * @param LessonStoreRequest $lessonStoreRequest
+     * @param ExamStoreRequest $examStoreRequest
      * @param Module $module
      * @return RedirectResponse
      */
-    public function store(LessonStoreRequest $lessonStoreRequest, Module $module): RedirectResponse
+    public function store(ExamStoreRequest $examStoreRequest, Module $module): RedirectResponse
     {
-        $this->examService->store($module, $lessonStoreRequest->validated());
+        $this->examService->store($module, $examStoreRequest->validated());
 
         return redirect()->route('admin.course.module.index', $module->course);
     }
 
     /**
-     * @param LessonUpdateRequest $lessonUpdateRequest
+     * @param ExamUpdateRequest $examUpdateRequest
      * @param Module $module
-     * @param Lesson $lesson
+     * @param Exam $exam
      * @return RedirectResponse
      */
-    public function update(LessonUpdateRequest $lessonUpdateRequest, Module $module, Lesson $lesson): RedirectResponse
+    public function update(ExamUpdateRequest $examUpdateRequest, Module $module, Exam $exam): RedirectResponse
     {
-        $this->examService->update($module, $lesson, $lessonUpdateRequest->validated());
+        $this->examService->update($module, $exam, $examUpdateRequest->validated());
 
         return redirect()->route('admin.course.module.index', $module->course);
     }

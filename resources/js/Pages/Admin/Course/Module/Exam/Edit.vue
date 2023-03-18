@@ -60,6 +60,8 @@
                             timeout: 3000
                         }
                     })
+
+                    form.questions = props.exam.questions;
                 },
             })
     };
@@ -74,15 +76,35 @@
         return options;
     })
 
+    const destroyQuestion = (position) => {
+        $q.dialog({
+            component: AdminDialog,
+            componentProps: {
+                title: `Excluir questão`,
+                message: `Tem certeza que deseja excluir essa questão?`,
+                confirm: true
+            },
+        }).onOk(() => {
+            form.questions = [
+                ...form.questions.slice(0, position),
+                ...form.questions.slice(position + 1)
+            ];
+        });
+    }
+
+    const addAlternativeCreateQuestion = (position) => form.questions[position].alternatives.push({ name: null })
+
     const goBack = () => useForm().get(route('admin.course.module.index', {
         course: props.course.id
     }));
+
+    const numberToChar = (number) => String.fromCharCode(97 + number).toUpperCase()
 </script>
 
 <template>
-    <AuthenticatedLayout>
-        <Head :title="`Editar avaliação ${exam.name} do módulo ${module.name}`" />
+    <Head :title="`Editar avaliação ${exam.name} do módulo ${module.name}`" />
 
+    <AuthenticatedLayout>
         <q-card flat class="q-mb-lg">
             <q-card-section class="row items-center q-px-lg">
                 <div class="flex col-12 col-md-9 justify-start items-center">
@@ -150,142 +172,178 @@
                             :list="form.questions"
                             item-key="index"
                         >
-                            <template #item="{element, index}">
-                                <div class="row q-col-gutter-lg q-mb-lg cursor-pointer">
-                                    <div class="col-md-6 col-12">
-                                        <q-input
-                                            outlined
-                                            v-model="element.title"
-                                            :label="`Titulo da questão ${index + 1}`"
-                                            disable
-                                        >
+                            <template #item="{element: question, index}">
+                                <div>
+                                    <q-card flat>
+                                        <q-card-section>
+                                            <div class="row q-col-gutter-lg cursor-pointer">
+                                                <div class="col-12 text-blue-grey-10 adm-fs-16 text-bold">
+                                                    Questão {{ index + 1 }}
+                                                </div>
 
-                                        <template v-slot:before>
-                                            <q-icon
-                                                name="swipe_vertical"
-                                                color="indigo"
-                                                size="sm"
-                                            />
-                                        </template>
-                                    </q-input>
-                                    </div>
+                                                <div class="col-md-6 col-12">
+                                                    <q-input
+                                                        outlined
+                                                        v-model="question.title"
+                                                        label="Titulo"
+                                                        disable
+                                                    >
 
-                                    <div class="col-md-6 offset-md-0 col-11 offset-1">
-                                        <q-select
-                                            :options="optionsAnswerTypes"
-                                            outlined
-                                            label="Tipo de questão"
-                                            v-model="element.answer_type"
-                                            emit-value
-                                            map-options
-                                            disable
-                                        >
-                                            <template v-slot:after>
-                                                <q-btn-group flat>
-                                                    <q-btn
-                                                        color="negative"
-                                                        flat
-                                                        icon="close"
-                                                        padding="xs"
-                                                        @click="destroyQuestion(index)"
-                                                    />
+                                                    <template v-slot:before>
+                                                        <q-icon
+                                                            name="swipe_vertical"
+                                                            color="indigo"
+                                                            size="sm"
+                                                        />
+                                                    </template>
+                                                </q-input>
+                                                </div>
+
+                                                <div class="col-md-6 offset-md-0 col-11 offset-1">
+                                                    <q-select
+                                                        :options="optionsAnswerTypes"
+                                                        outlined
+                                                        label="Tipo de resposta"
+                                                        v-model="question.answer_type"
+                                                        emit-value
+                                                        map-options
+                                                    >
+                                                        <!-- <template v-slot:after>
+                                                            <q-btn-group flat>
+                                                                <q-btn
+                                                                    color="negative"
+                                                                    flat
+                                                                    icon="close"
+                                                                    padding="xs"
+                                                                    @click="destroyQuestion(index)"
+                                                                />
+                                                                <q-btn
+                                                                    color="primary"
+                                                                    flat
+                                                                    icon="o_edit"
+                                                                    padding="xs"
+                                                                    @click="editQuestion(index, question)"
+                                                                />
+                                                            </q-btn-group>
+                                                        </template> -->
+                                                    </q-select>
+                                                </div>
+
+                                                <div
+                                                    class="col-12 row"
+                                                    v-for="(alternative, indexAlt) in question.alternatives"
+                                                    v-if="question.answer_type === 'fechada'"
+                                                >
+                                                    <div class="col-md-11 col-11 offset-1">
+                                                        <q-input
+                                                            outlined
+                                                            :label="`Opção resposta ${numberToChar(indexAlt)}`"
+                                                            v-model="alternative.name"
+                                                        >
+                                                            <template v-slot:append>
+                                                                <q-checkbox
+                                                                    v-model="question.has_video"
+                                                                    label="Resposta correta"
+                                                                    color="green"
+                                                                    class="adm-fs-13"
+                                                                    checked-icon="task_alt"
+                                                                    unchecked-icon="radio_button_unchecked"
+                                                                />
+                                                            </template>
+                                                        </q-input>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    class="col-12 column flex-center"
+                                                    v-if="question.answer_type === 'fechada'"
+                                                >
                                                     <q-btn
                                                         color="primary"
+                                                        no-caps
                                                         flat
-                                                        icon="o_edit"
-                                                        padding="xs"
-                                                        @click="editQuestion(index, element)"
+                                                        @click="addAlternativeCreateQuestion(index)"
+                                                    >
+                                                        <q-icon name="add" size="xs"/>
+
+                                                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
+                                                            Adicionar alternativa
+                                                        </div>
+                                                    </q-btn>
+                                                </div>
+
+
+                                                <!-- <div class="offset-1 col-11 flex items-center">
+                                                    <div class="text-grey-8">
+                                                        Anexos vinculados:
+                                                    </div>
+
+                                                    <q-checkbox
+                                                        v-model="element.has_video"
+                                                        label="Vídeo"
+                                                        disable
+                                                        color="indigo"
+                                                        checked-icon="task_alt"
+                                                        unchecked-icon="radio_button_unchecked"
                                                     />
-                                                </q-btn-group>
-                                            </template>
-                                        </q-select>
-                                    </div>
 
-                                    <div
-                                        class="col-12 row"
-                                        v-for="alternative in element.alternatives"
-                                        v-if="element.answer_type === 'fechada'"
-                                    >
-                                        <div class="col-md-4 col-10 offset-2">
-                                            <q-input
-                                                outlined
-                                                :label="`Opção resposta ${alternative.number}`"
-                                                v-model="alternative.name"
-                                                disable
-                                            />
-                                        </div>
-                                    </div>
+                                                    <q-checkbox
+                                                        v-model="element.has_audio"
+                                                        label="Áudio"
+                                                        disable
+                                                        color="indigo"
+                                                        checked-icon="task_alt"
+                                                        unchecked-icon="radio_button_unchecked"
+                                                    />
 
-                                    <div class="offset-1 col-11 flex items-center">
-                                        <div class="text-grey-8">
-                                            Anexos vinculados:
-                                        </div>
+                                                    <q-checkbox
+                                                        v-model="element.has_image"
+                                                        label="Imagem"
+                                                        disable
+                                                        color="indigo"
+                                                        checked-icon="task_alt"
+                                                        unchecked-icon="radio_button_unchecked"
+                                                    />
+                                                </div>
 
-                                        <q-checkbox
-                                            v-model="element.has_video"
-                                            label="Vídeo"
-                                            disable
-                                            color="indigo"
-                                            checked-icon="task_alt"
-                                            unchecked-icon="radio_button_unchecked"
-                                        />
+                                                <div class="offset-1 col-11" v-if="element.has_video">
+                                                    <q-input
+                                                        outlined
+                                                        label="Link do vídeo"
+                                                        v-model="element.video"
+                                                        disable
+                                                    />
+                                                </div>
 
-                                        <q-checkbox
-                                            v-model="element.has_audio"
-                                            label="Áudio"
-                                            disable
-                                            color="indigo"
-                                            checked-icon="task_alt"
-                                            unchecked-icon="radio_button_unchecked"
-                                        />
+                                                <div class="offset-1 col-11" v-if="element.has_audio">
+                                                    <q-input
+                                                        outlined
+                                                        label="Link do áudio"
+                                                        v-model="element.audio"
+                                                        disable
+                                                    />
+                                                </div>
 
-                                        <q-checkbox
-                                            v-model="element.has_image"
-                                            label="Imagem"
-                                            disable
-                                            color="indigo"
-                                            checked-icon="task_alt"
-                                            unchecked-icon="radio_button_unchecked"
-                                        />
-                                    </div>
-
-                                    <div class="offset-1 col-11" v-if="element.has_video">
-                                        <q-input
-                                            outlined
-                                            label="Link do vídeo"
-                                            v-model="element.video"
-                                            disable
-                                        />
-                                    </div>
-
-                                    <div class="offset-1 col-11" v-if="element.has_audio">
-                                        <q-input
-                                            outlined
-                                            label="Link do áudio"
-                                            v-model="element.audio"
-                                            disable
-                                        />
-                                    </div>
-
-                                    <div
-                                        class="offset-1 col-11 col-md-4"
-                                        v-if="element.has_image"
-                                    >
-                                        <q-img
-                                            :src="srcImage(element.image)"
-                                            style="height: 400px"
-                                            class="adm-br-16"
-                                        >
-                                            <div class="absolute-bottom text-subtitle2 row items-center">
-                                                <q-icon name="o_photo" size="md" class="q-mr-md"/>
+                                                <div
+                                                    class="offset-1 col-11 col-md-11"
+                                                    v-if="element.has_image"
+                                                >
+                                                    <q-img
+                                                        :src="srcImage(element.image)"
+                                                        style="height: 400px"
+                                                        class="adm-br-16"
+                                                />
+                                                </div> -->
                                             </div>
-                                        </q-img>
-                                    </div>
+                                        </q-card-section>
+                                    </q-card>
+
+                                    <q-separator v-if="index + 1 !== form.questions.length"/>
                                 </div>
                             </template>
                         </draggable>
 
-                        <div class="flex flex-center">
+                        <!-- <div class="flex flex-center">
                             <q-btn
                                 color="primary"
                                 no-caps
@@ -297,7 +355,7 @@
                                     Adicionar questão
                                 </div>
                             </q-btn>
-                        </div>
+                        </div> -->
                     </div>
 
 <!--

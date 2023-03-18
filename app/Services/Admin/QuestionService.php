@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Enums\AnswerTypeEnum;
+use App\Models\Exam;
 use App\Models\Question;
 use App\Models\Quizz;
 use Illuminate\Http\UploadedFile;
@@ -13,14 +14,14 @@ use Illuminate\Support\Str;
 class QuestionService
 {
     /**
-     * @param Quizz $quizz
+     * @param Exam $exam
      * @param null|array $requestQuestions
      * @return void
      */
-    public function deleteRecordsOutsideTheIdRange(Quizz $quizz, null|array $requestQuestions = []): void
+    public function deleteRecordsOutsideTheIdRange(Exam $exam, null|array $requestQuestions = []): void
     {
         if (is_array($requestQuestions)) {
-            $quizz->questions()
+            $exam->questions()
                 ->whereNotIn('id', data_get($requestQuestions, '*.id'))
                 ->each(fn(Question $question) => $question->delete());
         }
@@ -38,13 +39,13 @@ class QuestionService
     }
 
     /**
-     * @param Quizz $quizz
+     * @param Exam $exam
      * @param null|array $requestQuestions
      * @return void
      */
-    public function createOrUpdateQuestions(Quizz $quizz, null|array $requestQuestions = []): void
+    public function createOrUpdateQuestions(Exam $exam, null|array $requestQuestions = []): void
     {
-        $this->deleteRecordsOutsideTheIdRange($quizz, $requestQuestions);
+        $this->deleteRecordsOutsideTheIdRange($exam, $requestQuestions);
 
         if($requestQuestions) {
             $count = 1;
@@ -55,7 +56,7 @@ class QuestionService
                 $hasImage = Arr::get($requestQuestion, 'has_image');
 
                 /** @var Question */
-                $question = $quizz->questions()->updateOrCreate(
+                $question = $exam->questions()->updateOrCreate(
                     [
                         'id' =>  Arr::get($requestQuestion, 'id')
                     ],

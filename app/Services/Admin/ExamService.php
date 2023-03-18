@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Exam;
 use App\Models\Lesson;
 use App\Models\Module;
 use Illuminate\Http\UploadedFile;
@@ -12,6 +13,19 @@ use Illuminate\Support\Facades\Storage;
 class ExamService
 {
     /**
+     * @var QuestionService
+     */
+    protected QuestionService $questionService;
+
+    /**
+     * @param QuestionService $questionService
+     */
+    public function __construct(QuestionService $questionService)
+    {
+        $this->questionService = $questionService;
+    }
+
+    /**
      * @param array $requestData
      * @return array
      */
@@ -20,11 +34,6 @@ class ExamService
         return [
             'name' => Arr::get($requestData, 'name'),
             'description' => Arr::get($requestData, 'description'),
-            'number' => Arr::get($requestData, 'number'),
-            'duration' => Arr::get($requestData, 'duration'),
-            'video' => Arr::get($requestData, 'video'),
-            'can_comments' => Arr::get($requestData, 'can_comments'),
-            'number' => Arr::get($requestData, 'number'),
         ];
     }
 
@@ -72,35 +81,44 @@ class ExamService
     /**
      * @param Module $module
      * @param array $requestData
-     * @return Lesson
+     * @return Exam
      */
-    public function store(Module $module, array $requestData = []): Lesson
+    public function store(Module $module, array $requestData = []): Exam
     {
         if (! Arr::get($requestData, 'number')) {
             Arr::set($requestData, 'number', $module && $module->all_items->isNotEmpty() ? $module->all_items->last()->number + 1 : 1);
         }
 
-        /** @var Lesson */
-        $lesson = $module->lessons()->create($this->transformData($requestData, $module));
+        /** @var Exam|null */
+        $exam = $module->exams()->create($this->transformData($requestData, $module));
 
-        $this->uploadWallPaper($lesson, Arr::get($requestData, 'wallpaper'));
+        $this->questionService->createOrUpdateQuestions($exam, Arr::get($requestData, 'questions', []));
 
-        return $lesson;
+        // $this->uploadWallPaper($lesson, Arr::get($requestData, 'wallpaper'));
+
+        return $exam;
     }
 
-
-    public function update(Module $module, Lesson $lesson, array $requestData = []): Lesson
+    /**
+     * @param Module $module
+     * @param Exam $exam
+     * @param array $requestData
+     * @return Exam
+     */
+    public function update(Module $module, Exam $exam, array $requestData = []): Exam
     {
-        /** @var Lesson|null */
-        $lesson = $module->lessons()->find($lesson->id);
+        /** @var Exam|null */
+        $exam = $module->exams()->find($exam->id);
 
-        if ($lesson) {
-            $lesson->update($this->transformData($requestData));
+        if ($exam) {
+            $exam->update($this->transformData($requestData));
 
-            $this->uploadWallPaper($lesson, Arr::get($requestData, 'wallpaper'));
+            // $this->uploadWallPaper($exam, Arr::get($requestData, 'wallpaper'));
+
+            $this->questionService->createOrUpdateQuestions($exam, Arr::get($requestData, 'questions', []));
         }
 
-        return $lesson;
+        return $exam;
     }
 
     /**

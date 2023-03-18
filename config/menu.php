@@ -63,7 +63,7 @@ return [
         'items' => [
             [
                 'route' => 'admin.course.index',
-                'active' => 'admin.course*',
+                'active' => 'admin.course*|admin.module*',
                 'label' => 'Cursos',
                 'icon' => 'o_school',
                 'can' => 'course_index'
