@@ -43,6 +43,7 @@ class ExamController extends Controller
         return inertia('Admin/Course/Module/Exam/Create', [
             'course' => new CourseResource($module->course),
             'module' => new ModuleResource($module),
+            'answerTypes' => AnswerTypeEnum::toArray(),
         ]);
     }
 
@@ -81,6 +82,8 @@ class ExamController extends Controller
      */
     public function update(ExamUpdateRequest $examUpdateRequest, Module $module, Exam $exam): RedirectResponse
     {
+        dd($examUpdateRequest->validated());
+
         $this->examService->update($module, $exam, $examUpdateRequest->validated());
 
         return redirect()->route('admin.course.module.index', $module->course);

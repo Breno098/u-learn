@@ -96,7 +96,11 @@ class QuestionService
 
         foreach ($alternatives as $alternative) {
             if ($name = Arr::get($alternative, 'name')) {
-                $question->alternatives()->create(['name' => $name, 'number' => $count++]);
+                $question->alternatives()->create([
+                    'name' => $name,
+                    'number' => $count++,
+                    'is_correct' => Arr::get($alternative, 'is_correct', false)
+                ]);
             }
         }
     }

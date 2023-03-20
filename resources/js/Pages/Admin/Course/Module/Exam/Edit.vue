@@ -92,13 +92,31 @@
         });
     }
 
-    const addAlternativeCreateQuestion = (position) => form.questions[position].alternatives.push({ name: null })
+    const addAlternative = (position) => form.questions[position].alternatives.push({
+        name: null,
+        is_correct: false
+    })
+
+    const removeAlternative = (positionQuestion, positionAlternative) => {
+        form.questions[positionQuestion].alternatives = [
+            ...form.questions[positionQuestion].alternatives.slice(0, positionAlternative),
+            ...form.questions[positionQuestion].alternatives.slice(positionAlternative + 1)
+        ]
+    }
 
     const goBack = () => useForm().get(route('admin.course.module.index', {
         course: props.course.id
     }));
 
     const numberToChar = (number) => String.fromCharCode(97 + number).toUpperCase()
+
+    const changeAnswerType = (position) => {
+        let answerType = form.questions[position].answer_type;
+
+        if (answerType === 'fechada' && form.questions[position].alternatives.length == 0) {
+            addAlternative(position);
+        }
+    }
 </script>
 
 <template>
@@ -186,17 +204,16 @@
                                                         outlined
                                                         v-model="question.title"
                                                         label="Titulo"
-                                                        disable
+                                                        color="indigo"
                                                     >
-
-                                                    <template v-slot:before>
-                                                        <q-icon
-                                                            name="swipe_vertical"
-                                                            color="indigo"
-                                                            size="sm"
-                                                        />
-                                                    </template>
-                                                </q-input>
+                                                        <template v-slot:before>
+                                                            <q-icon
+                                                                name="swipe_vertical"
+                                                                color="indigo"
+                                                                size="sm"
+                                                            />
+                                                         </template>
+                                                    </q-input>
                                                 </div>
 
                                                 <div class="col-md-6 offset-md-0 col-11 offset-1">
@@ -207,6 +224,8 @@
                                                         v-model="question.answer_type"
                                                         emit-value
                                                         map-options
+                                                        :change="changeAnswerType(index)"
+                                                        color="indigo"
                                                     >
                                                         <!-- <template v-slot:after>
                                                             <q-btn-group flat>
@@ -239,37 +258,52 @@
                                                             outlined
                                                             :label="`Opção resposta ${numberToChar(indexAlt)}`"
                                                             v-model="alternative.name"
+                                                            color="indigo"
                                                         >
-                                                            <template v-slot:append>
+                                                            <!-- <template v-slot:append>
                                                                 <q-checkbox
-                                                                    v-model="question.has_video"
+                                                                    v-model="alternative.is_correct"
                                                                     label="Resposta correta"
                                                                     color="green"
                                                                     class="adm-fs-13"
                                                                     checked-icon="task_alt"
                                                                     unchecked-icon="radio_button_unchecked"
                                                                 />
+                                                            </template> -->
+                                                            <template v-slot:append>
+                                                                <q-btn
+                                                                    color="negative"
+                                                                    flat
+                                                                    icon="close"
+                                                                    padding="xs"
+                                                                    @click="removeAlternative(index, indexAlt)"
+                                                                    v-if="question.alternatives.length > 1"
+                                                                >
+                                                                    <q-tooltip
+                                                                        anchor="center left"
+                                                                        self="center right"
+                                                                        :offset="[10, 10]"
+                                                                        class="text-body2 bg-grey-10"
+                                                                    >
+                                                                        Remover alternativa {{ numberToChar(indexAlt) }}
+                                                                    </q-tooltip>
+                                                                </q-btn>
                                                             </template>
                                                         </q-input>
                                                     </div>
                                                 </div>
 
                                                 <div
-                                                    class="col-12 column flex-center"
+                                                    class="col-12 flex justify-end"
                                                     v-if="question.answer_type === 'fechada'"
                                                 >
                                                     <q-btn
-                                                        color="primary"
+                                                        color="indigo"
                                                         no-caps
                                                         flat
-                                                        @click="addAlternativeCreateQuestion(index)"
-                                                    >
-                                                        <q-icon name="add" size="xs"/>
-
-                                                        <div class="q-ml-sm adm-fw-500 adm-fs-14 adm-lh-20">
-                                                            Adicionar alternativa
-                                                        </div>
-                                                    </q-btn>
+                                                        @click="addAlternative(index)"
+                                                        :label="`Adicionar alternativa ${numberToChar(question.alternatives.length)}`"
+                                                    />
                                                 </div>
 
 

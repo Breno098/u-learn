@@ -39,7 +39,8 @@ class ExamResource extends JsonResource
                 'has_audio' => $question->has_audio,
                 'has_image' => $question->has_image,
                 'alternatives' => $question->alternatives->map(fn (Alternative $alternative) => [
-                    'name' => $alternative->name
+                    'name' => $alternative->name,
+                    'is_correct' => $alternative->is_correct
                 ])
             ]),
             /** Pivot Relation */
