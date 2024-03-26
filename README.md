@@ -1,6 +1,3 @@
-<p align="center">
-    <img src="https://aluno.francescomaligia.com.br/img/logo-admin-login.png" width="400" alt="Logo">
-</p>
 
 # Francês Streaming
 
